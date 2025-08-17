@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from './Button';
 import InputField from './InputField';
 import googleLogo from "../assets/google.png";
