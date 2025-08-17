@@ -8,8 +8,8 @@
     top: 50%;
     transform: translateY(-50%);
     left: 0.9rem;
-    pointer-events: none;  
-    color: var(--txt-placeholder);  
+    pointer-events: none;
+    color: var(--txt-placeholder);
     opacity: 0.5;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .input-field input.with-icon {
-    padding-left: 2.5rem; 
+    padding-left: 2.5rem;
 }
 
 .input-field input:hover,
@@ -38,4 +38,24 @@
 .input-field input::placeholder {
     font-family: 'Inter';
     opacity: 0.5;
+}
+
+@media screen and (max-width: 480px) {
+    .input-field input {
+        padding: 0.7rem 0.6rem;
+        font-size: 15px;
+    }
+
+    .input-field input.with-icon {
+        padding-left: 2rem;
+    }
+
+    .input-field .input-icon {
+        left: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .input-field input::placeholder {
+        font-size: 0.8rem;
+    }
 }

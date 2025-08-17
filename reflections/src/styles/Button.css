@@ -14,3 +14,9 @@
 .button-container button:hover {
     background-color: var(--btn-hover);
 }
+
+@media screen and (max-width: 768px) {
+    .button-container button {
+        padding: 0.7rem;
+    }
+}
