@@ -1,0 +1,41 @@
+.input-field {
+    position: relative;
+    width: 100%;
+}
+
+.input-field .input-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0.9rem;
+    pointer-events: none;  
+    color: var(--txt-placeholder);  
+    opacity: 0.5;
+}
+
+.input-field input {
+    font-family: 'Inter';
+    font-size: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 0.5rem;
+    outline: none;
+    border: 2px solid var(--border-color-input);
+    padding: 0.7rem 0.9rem;
+    transition: border 0.3s ease;
+    width: 100%;
+}
+
+.input-field input.with-icon {
+    padding-left: 2.5rem; 
+}
+
+.input-field input:hover,
+.input-field input:focus {
+    border: 2px solid var(--border-color-hover);
+}
+
+.input-field input::placeholder {
+    font-family: 'Inter';
+    opacity: 0.5;
+}
