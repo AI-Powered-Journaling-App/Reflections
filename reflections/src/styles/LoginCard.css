@@ -99,7 +99,7 @@
     left: 4px;
     width: 5px;
     height: 10px;
-    border: solid var(--txt-white);
+    border: solid var(--txt-inverted);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
@@ -120,7 +120,7 @@
     margin: 1rem 0rem;
     border: 2px solid var(--border-color-input);
     border-radius: 0.5rem;
-    background-color: var(--txt-white);
+    background-color: var(--txt-inverted);
     padding: 0.8rem;
     outline: none;
     width: 100%;

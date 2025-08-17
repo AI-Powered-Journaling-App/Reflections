@@ -5,24 +5,27 @@ import Login from './pages/Login';
 
 import './styles/App.css';
 import './styles/variables.css';
+import { Notification } from './components/Notification';
 
 function App() {
 
     return (
         <BrowserRouter>
-            <Routes>
+            <Notification>
+                <Routes>
 
-                <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<Login />} />
 
-                <Route path="/home" element={
-                    <ProtectedRoute>
-                        <Home />
-                    </ProtectedRoute>
-                } />
+                    <Route path="/home" element={
+                        <ProtectedRoute>
+                            <Home />
+                        </ProtectedRoute>
+                    } />
 
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route path="/" element={<Navigate to="/login" replace />} />
 
-            </Routes>
+                </Routes>
+            </Notification>
         </BrowserRouter>
     );
 }

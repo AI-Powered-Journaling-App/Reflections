@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from './Button';
 import InputField from './InputField';
-import googleLogo from "../assets/google.png";
+import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { handleGoogleSignUp, handleSignIn } from '../utils/LoginUtils';
 
+import googleLogo from "../assets/google.png";
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 import '../styles/LoginCard.css';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { useNotification } from './Notification';
 
 type LoginCardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,34 +24,17 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
-    const handleLogIn = async () => {
-        if (!email.trim()) return alert("Enter email!");
-        if (!password.trim()) return alert("Enter password!");
+    const { showNotification } = useNotification();
 
-        setIsLoading(true);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate("/home");
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigate('/home');
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleGoogleSignIn = async () => {
-        setGoogleSigningUp(true);
-
-        try {
-            await signInWithPopup(auth, googleProvider);
-            navigate('/home');
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setGoogleSigningUp(false);
-        }
-    };
 
     return (
         <>
@@ -95,11 +80,15 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     </div>
 
                     <div className="button-wrapper">
-                        <Button text={isLoading ? "Signing In..." : "Sign In"} onClick={handleLogIn} />
+                        <Button text={isLoading ? "Signing In..." : "Sign In"} onClick={() => {
+                            handleSignIn({ email, password, setIsLoading, rememberMe: isChecked, navigate, showNotification });
+                        }} />
                     </div>
 
                     <div className="google-button-wrapper">
-                        <button onClick={handleGoogleSignIn} disabled={googleSigningUp}>
+                        <button onClick={() => {
+                            handleGoogleSignUp({ setGoogleSigningUp, navigate, showNotification });
+                        }} disabled={googleSigningUp}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
                             {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>

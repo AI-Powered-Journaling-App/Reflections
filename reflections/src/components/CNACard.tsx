@@ -2,13 +2,13 @@ import { useState } from "react";
 import Button from './Button';
 import InputField from './InputField';
 import googleLogo from "../assets/google.png";
+import { useNavigate } from "react-router-dom";
+import { handleGoogleSignUp, handleSignUp } from "../utils/LoginUtils";
 
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import '../styles/LoginCard.css';
-import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
-import { auth, googleProvider } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNotification } from "./Notification";
 
 type CNACardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,40 +23,7 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
-    const handleSignUp = async () => {
-        if (!username.trim()) return alert("Enter username!");
-        if (!email.trim()) return alert("Enter email!");
-        if (!password.trim()) return alert("Enter password!");
-
-        setIsLoading(true);
-
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            if (auth.currentUser) {
-                await updateProfile(auth.currentUser, { displayName: username });
-            }
-            navigate("/home");
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleGoogleSignUp = async () => {
-
-        setGoogleSigningUp(true);
-
-        try {
-            await signInWithPopup(auth, googleProvider);
-            navigate("/home");
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setGoogleSigningUp(false);
-        }
-
-    };
+    const { showNotification } = useNotification();
 
     return (
         <>
@@ -106,11 +73,15 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
                     </div>
 
                     <div className="button-wrapper">
-                        <Button text={isLoading ? "Signing Up..." : "Sign Up"} onClick={handleSignUp} />
+                        <Button text={isLoading ? "Signing Up..." : "Sign Up"} onClick={() => {
+                            handleSignUp({ username, email, password, setIsLoading, setIsLogin, showNotification });
+                        }} />
                     </div>
 
                     <div className="google-button-wrapper">
-                        <button onClick={handleGoogleSignUp} disabled={googleSigningUp}>
+                        <button onClick={() => {
+                            handleGoogleSignUp({ setGoogleSigningUp, navigate, showNotification });
+                        }} disabled={googleSigningUp}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
                             {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>
