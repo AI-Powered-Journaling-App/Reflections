@@ -57,7 +57,7 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: "http://localhost:5173/home",
+                redirectTo: `${window.location.origin}/home`,
             },
         });
 
