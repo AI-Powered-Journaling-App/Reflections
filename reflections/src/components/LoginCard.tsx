@@ -21,9 +21,6 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
-    // temp fix for deployment
-    console.log(isLoading, googleSigningUp);
-
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) navigate("/home");
@@ -117,13 +114,13 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     </div>
 
                     <div className="button-wrapper">
-                        <Button text="Sign In" onClick={handleLogIn} />
+                        <Button text={isLoading ? "Signing In..." : "Sign In"} onClick={handleLogIn} />
                     </div>
 
                     <div className="google-button-wrapper">
                         <button onClick={handleGoogleSignIn}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
-                            Continue with Google
+                            {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>
                     </div>
 

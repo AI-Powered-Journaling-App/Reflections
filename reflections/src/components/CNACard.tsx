@@ -121,13 +121,13 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
                     </div>
 
                     <div className="button-wrapper">
-                        <Button text="Sign Up" onClick={handleSignUp} />
+                        <Button text={isLoading ? "Signing Up..." : "Sign Up"} onClick={handleSignUp} />
                     </div>
 
                     <div className="google-button-wrapper">
                         <button onClick={handleGoogleSignUp}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
-                            Continue with Google
+                            {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>
                     </div>
 
