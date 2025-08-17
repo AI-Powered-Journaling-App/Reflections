@@ -1,35 +1,26 @@
+import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useEffect, useState, type JSX } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import supabase from '../supabase';
+import { Navigate } from 'react-router-dom';
+import { auth } from '../firebase';
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
-    const [session, setSession] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
+        const unsub = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
             setLoading(false);
-        });
+        })
 
-        const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setLoading(false);
-        });
-
-        return () => {
-            authListener.subscription.unsubscribe();
-        }
-
-    }, [navigate, location.hash, location.pathname]);
+        return () => unsub();
+    }, []);
 
     if (loading) {
         return null;
     }
 
-    if (!session) {
+    if (!user) {
         return <Navigate to="/login" replace />
     }
 

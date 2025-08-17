@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import Button from './Button';
 import InputField from './InputField';
 import googleLogo from "../assets/google.png";
-import supabase from "../supabase";
 
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 import '../styles/LoginCard.css';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 
 type LoginCardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,53 +22,33 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) navigate("/home");
-        });
-    }, []);
-
     const handleLogIn = async () => {
         if (!email.trim()) return alert("Enter email!");
         if (!password.trim()) return alert("Enter password!");
 
         setIsLoading(true);
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-
-        if (error) {
-            console.log(error);
-            return;
-        } else {
-            console.log("User: ", data.user);
-            console.log("Session: ", data.session);
-
-            navigate("/home");
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate('/home');
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     const handleGoogleSignIn = async () => {
         setGoogleSigningUp(true);
 
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/home`,
-            },
-        });
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data);
+        try {
+            await signInWithPopup(auth, googleProvider);
+            navigate('/home');
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setGoogleSigningUp(false);
         }
-
-        setGoogleSigningUp(false);
     };
 
     return (
@@ -118,7 +99,7 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     </div>
 
                     <div className="google-button-wrapper">
-                        <button onClick={handleGoogleSignIn}>
+                        <button onClick={handleGoogleSignIn} disabled={googleSigningUp}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
                             {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>

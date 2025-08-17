@@ -1,14 +1,14 @@
-import supabase from "../supabase";
+import { signOut } from "firebase/auth";
 import Button from "../components/Button";
+import { auth } from "../firebase";
 
 const Home = () => {
 
     const handleLogOut = async () => {
-
-        const { error } = await supabase.auth.signOut();
-
-        if (error) {
-            console.log(error);
+        try {
+            await signOut(auth);
+        } catch (err) {
+            console.log(err);
         }
     };
 

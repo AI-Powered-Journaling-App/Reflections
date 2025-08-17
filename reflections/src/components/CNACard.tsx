@@ -2,11 +2,13 @@ import { useState } from "react";
 import Button from './Button';
 import InputField from './InputField';
 import googleLogo from "../assets/google.png";
-import supabase from "../supabase";
 
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import '../styles/LoginCard.css';
+import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 type CNACardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,6 +16,7 @@ type CNACardProps = {
 
 const CNACard = ({ setIsLogin }: CNACardProps) => {
 
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -21,56 +24,38 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
     const handleSignUp = async () => {
-
         if (!username.trim()) return alert("Enter username!");
         if (!email.trim()) return alert("Enter email!");
         if (!password.trim()) return alert("Enter password!");
 
         setIsLoading(true);
 
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: { username },
-            },
-        });
-
-        if (error) {
-            console.log(error);
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            if (auth.currentUser) {
+                await updateProfile(auth.currentUser, { displayName: username });
+            }
+            navigate("/home");
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
         }
-        else {
-            setUsername("");
-            setEmail("");
-            setPassword("");
-
-            console.log("User created : ", data);
-
-            setIsLogin(true);
-
-            alert("Check your email");
-        }
-
-        setIsLoading(false);
     };
 
     const handleGoogleSignUp = async () => {
+
         setGoogleSigningUp(true);
 
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/home`,
-            },
-        });
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data);
+        try {
+            await signInWithPopup(auth, googleProvider);
+            navigate("/home");
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setGoogleSigningUp(false);
         }
 
-        setGoogleSigningUp(false);
     };
 
     return (
@@ -125,7 +110,7 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
                     </div>
 
                     <div className="google-button-wrapper">
-                        <button onClick={handleGoogleSignUp}>
+                        <button onClick={handleGoogleSignUp} disabled={googleSigningUp}>
                             <img src={googleLogo} alt="Google" className="google-icon" />
                             {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>
