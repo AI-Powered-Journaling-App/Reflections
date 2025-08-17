@@ -21,6 +21,9 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
 
+    // temp fix for deployment
+    console.log(isLoading, googleSigningUp);
+
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) navigate("/home");
