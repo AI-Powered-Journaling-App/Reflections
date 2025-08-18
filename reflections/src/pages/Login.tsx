@@ -6,6 +6,7 @@ import LoginCard from '../components/LoginCard';
 import '../styles/Login.css';
 
 import loginImage from "../assets/login-page-img.png";
+import ScatteredIcons from '../components/ScatteredIcons';
 
 const cardVariants = {
     initial: {
@@ -31,6 +32,7 @@ const Login = () => {
     return (
         <>
             <div className="main-wrapper">
+                <ScatteredIcons />
                 <div className="content">
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}

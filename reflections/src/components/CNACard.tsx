@@ -74,7 +74,7 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
 
                     <div className="button-wrapper">
                         <Button text={isLoading ? "Signing Up..." : "Sign Up"} onClick={() => {
-                            handleSignUp({ username, email, password, setIsLoading, setIsLogin, showNotification });
+                            handleSignUp({ username, email, password, setIsLoading, setIsLogin, showNotification, setUsername, setEmail, setPassword });
                         }} />
                     </div>
 

@@ -7,6 +7,7 @@ import {
     signInWithPopup,
     updateProfile,
     signOut,
+    sendPasswordResetEmail,
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import { type NavigateFunction } from "react-router-dom";
@@ -14,8 +15,11 @@ import { type NavigateFunction } from "react-router-dom";
 
 type SignUpProps = {
     username: string,
+    setUsername: React.Dispatch<React.SetStateAction<string>>,
     email: string,
+    setEmail: React.Dispatch<React.SetStateAction<string>>,
     password: string,
+    setPassword: React.Dispatch<React.SetStateAction<string>>,
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
     showNotification: (text: string) => void,
@@ -29,14 +33,35 @@ type GoogleSignInProps = {
 
 type SignInProps = {
     email: string,
+    setEmail: React.Dispatch<React.SetStateAction<string>>,
     password: string,
+    setPassword: React.Dispatch<React.SetStateAction<string>>,
     rememberMe: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
     navigate: NavigateFunction,
     showNotification: (text: string) => void,
 }
 
-export const handleSignUp = async ({ username, email, password, setIsLoading, setIsLogin, showNotification }: SignUpProps) => {
+type ForgotPasswordProps = {
+    email: string,
+    setEmail: React.Dispatch<React.SetStateAction<string>>,
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    showNotification: (text: string) => void,
+    onClose: () => void,
+}
+
+
+export const handleSignUp = async ({
+    username,
+    email,
+    password,
+    setIsLoading,
+    setIsLogin,
+    showNotification,
+    setUsername,
+    setEmail,
+    setPassword,
+}: SignUpProps) => {
 
     if (!username.trim()) return showNotification("Enter username!");
     if (!email.trim()) return showNotification("Enter email!");
@@ -57,12 +82,19 @@ export const handleSignUp = async ({ username, email, password, setIsLoading, se
     } catch (err) {
         console.log(err);
     } finally {
+        setUsername("");
+        setEmail("");
+        setPassword("");
         setIsLoading(false);
     }
 
 };
 
-export const handleGoogleSignUp = async ({ setGoogleSigningUp, navigate, showNotification }: GoogleSignInProps) => {
+export const handleGoogleSignUp = async ({
+    setGoogleSigningUp,
+    navigate,
+    showNotification
+}: GoogleSignInProps) => {
 
     setGoogleSigningUp(true);
 
@@ -78,7 +110,16 @@ export const handleGoogleSignUp = async ({ setGoogleSigningUp, navigate, showNot
 
 };
 
-export const handleSignIn = async ({ email, password, rememberMe, setIsLoading, navigate, showNotification }: SignInProps) => {
+export const handleSignIn = async ({
+    email,
+    password,
+    rememberMe,
+    setIsLoading,
+    navigate,
+    showNotification,
+    setEmail,
+    setPassword,
+}: SignInProps) => {
     if (!email.trim()) return showNotification("Enter username!");
     if (!password.trim()) return showNotification("Enter password!");
 
@@ -94,6 +135,31 @@ export const handleSignIn = async ({ email, password, rememberMe, setIsLoading, 
     } catch (err) {
         console.log(err);
     } finally {
+        setEmail("");
+        setPassword("");
         setIsLoading(false);
     }
 };
+
+export const handleForgotPassword = async ({
+    email,
+    setIsLoading,
+    showNotification,
+    setEmail,
+    onClose,
+}: ForgotPasswordProps) => {
+    if (!email.trim()) return showNotification("Enter email!");
+
+    setIsLoading(true);
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showNotification("Password reset link sent! Check your inbox.");
+    } catch (err) {
+        console.log(err);
+    } finally {
+        setEmail("");
+        onClose();
+        setIsLoading(false);
+    }
+}

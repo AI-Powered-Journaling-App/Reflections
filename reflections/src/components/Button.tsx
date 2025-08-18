@@ -9,7 +9,7 @@ const Button = ({ text, onClick }: ButtonProps) => {
     return (
         <>
             <div className="button-container">
-                <button onClick={onClick} >{text}</button>
+                <button onClick={onClick}>{text}</button>
             </div>
         </>
     );

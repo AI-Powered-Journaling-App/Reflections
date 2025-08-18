@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from './Button';
 import InputField from './InputField';
+import ForgotPassword from "./ForgotPassword";
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
@@ -23,6 +24,8 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [googleSigningUp, setGoogleSigningUp] = useState(false);
+
+    const [isForgotOpen, setIsForgotOpen] = useState(false);
 
     const { showNotification } = useNotification();
 
@@ -76,12 +79,12 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                             <input type="checkbox" checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
                             <span className="custom-link" onClick={() => setIsChecked(!isChecked)} > Remember me?</span>
                         </div>
-                        <span className="custom-link" >Forgot password?</span>
+                        <span className="custom-link" onClick={() => setIsForgotOpen(true)} >Forgot password?</span>
                     </div>
 
                     <div className="button-wrapper">
                         <Button text={isLoading ? "Signing In..." : "Sign In"} onClick={() => {
-                            handleSignIn({ email, password, setIsLoading, rememberMe: isChecked, navigate, showNotification });
+                            handleSignIn({ email, password, setIsLoading, rememberMe: isChecked, navigate, showNotification, setEmail, setPassword });
                         }} />
                     </div>
 
@@ -97,9 +100,9 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     <div className="cna-link">
                         <span>Don't have an account? <span className="custom-link" onClick={() => setIsLogin(false)}>Sign Up</span></span>
                     </div>
-
                 </div>
             </div>
+            {isForgotOpen && <ForgotPassword onClose={() => setIsForgotOpen(false)} />}
         </>
     );
 }
