@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import "../styles/Notification.css";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, easeInOut, motion } from "framer-motion";
 
 type NotificationContextType = {
     showNotification: (text: string) => void;
@@ -9,6 +9,7 @@ type NotificationContextType = {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const Notification = ({ children }: { children: ReactNode }) => {
+
     // creating a basic notification state which stores a string
     const [notification, setNotification] = useState<string | null>(null);
 
@@ -16,7 +17,7 @@ export const Notification = ({ children }: { children: ReactNode }) => {
         setNotification(text);
         setTimeout(() => {
             setNotification(null);
-        }, 2000);
+        }, 2400);
     };
 
     return (
@@ -26,10 +27,15 @@ export const Notification = ({ children }: { children: ReactNode }) => {
                 <AnimatePresence mode="wait">
                     {notification && (
                         <motion.div
-                            initial={{ opacity: 0, y: -50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -50 }}
-                            transition={{ duration: 0.3 }}
+                            initial={{ opacity: 0, scale: 0.8, y: -30, filter: "blur(5px)" }}
+                            animate={{
+                                opacity: 1, scale: 1, y: 0, filter: "blur(0px)",
+                                transition: { type: "spring", stiffness: 300, damping: 15, mass: 0.8 }
+                            }}
+                            exit={{
+                                opacity: 0, scale: 0.8, y: -30, filter: "blur(5px)",
+                                transition: { duration: 0.3, ease: easeInOut }
+                            }}
                             className="notification"
                         >
                             {notification}

@@ -1,0 +1,7 @@
+body{
+    background-color: var(--bg-primary);
+}
+
+.logout-button{
+    margin-top:400px;
+}

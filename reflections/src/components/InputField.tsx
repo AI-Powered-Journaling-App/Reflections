@@ -36,7 +36,7 @@ const InputField = ({ type, placeholder, icon, value, onChange }: InputFieldProp
                     icon={showPassword ? faEyeSlash : faEye}
                     className="eye-icon"
                     onClick={() => {
-                        setShowPassword((prev) => (!prev))
+                        setShowPassword(!showPassword);
                     }}
                 />
             )}

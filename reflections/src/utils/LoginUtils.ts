@@ -120,7 +120,7 @@ export const handleSignIn = async ({
     setEmail,
     setPassword,
 }: SignInProps) => {
-    if (!email.trim()) return showNotification("Enter username!");
+    if (!email.trim()) return showNotification("Enter email!");
     if (!password.trim()) return showNotification("Enter password!");
 
     setIsLoading(true);
