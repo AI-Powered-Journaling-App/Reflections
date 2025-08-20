@@ -1,7 +1,16 @@
-body{
+body {
     background-color: var(--bg-primary);
 }
 
-.logout-button{
-    margin-top:400px;
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }

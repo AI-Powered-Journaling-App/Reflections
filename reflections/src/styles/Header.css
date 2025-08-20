@@ -1,12 +1,11 @@
 .header {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 60px;
     background-color: var(--bg-card);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    box-shadow: var(--drop-shadow);
+    z-index: 10;
 }
 
 .header-content {
@@ -69,4 +68,75 @@
     background-color: var(--accent-primary);
     margin-top: 3px;
     align-self: flex-start;
+}
+
+.user-options-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    right: 30px;
+    border: 2px solid var(--accent-primary);
+    padding: 0.3rem;
+    border-radius: 10px;
+    background-color: var(--bg-card);
+    gap: 0.3rem;
+}
+
+.user-options {
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.1s ease;
+    border-radius: 5px;
+}
+
+.user-options:hover {
+    background-color: var(--accent-secondary);
+}
+
+.user-options.logout:hover {
+    background-color: var(--warning-color);
+    color: var(--bg-card);
+}
+
+@media screen and (max-width: 800px) {
+    .nav-items {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 736px) {
+    .nav-items {
+        font-size: 0.8rem;
+    }
+
+    .title h2 {
+        display: none;
+    }
+
+    .nav {
+        flex: auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header-content {
+        padding: 0 10px;
+    }
+
+    .nav {
+        flex: auto;
+        gap: 1rem;
+    }
+
+    .user-options-container {
+        padding: 0.2rem;
+        gap: 0.2rem;
+        font-size: 0.9rem;
+    }
+
+    .user-options {
+        padding: 0.3rem 0.8rem;
+    }
 }

@@ -1,33 +1,41 @@
-import { signOut } from "firebase/auth";
 import Header from "../components/Header";
-import Button from "../components/Button";
-import { auth } from "../firebase";
 import '../styles/Home.css'
-import { useNotification } from "../components/Notification";
+import HomeSection from "../components/HomeSection";
+import AddEntrySection from "../components/AddEntrySection";
+import YourEntriesSection from "../components/YourEntriesSection";
+import { useState } from "react";
 
 const Home = () => {
 
-    const { showNotification } = useNotification();
-
-    const handleLogOut = async () => {
-        try {
-            await signOut(auth);
-
-            showNotification("Logged out successfully!");
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const [isHomeSection, setIsHomeSection] = useState(true);
+    const [isAddEntrySection, setIsAddEntrySection] = useState(false);
+    const [isYourEntriesSection, setIsYourEntriesSection] = useState(false);
 
     return (
         <>
             <div className="main-content">
-                <Header />
-                {/* homecard */}
-                {/* add new entry */}
-                {/* your entry */}
+                <Header
+                    isHomeSection={isHomeSection}
+                    isAddEntrySection={isAddEntrySection}
+                    isYourEntriesSection={isYourEntriesSection}
+
+                    setIsHomeSection={setIsHomeSection}
+                    setIsAddEntrySection={setIsAddEntrySection}
+                    setIsYourEntriesSection={setIsYourEntriesSection}
+                />
+
+                <div className="center-content">
+
+                    {isHomeSection && <HomeSection />}
+
+                    {isAddEntrySection && <AddEntrySection />}
+
+                    {isYourEntriesSection && <YourEntriesSection />}
+
+                </div>
+
                 {/* footer */}
-                <div className="logout-button"><Button text="Logout" onClick={handleLogOut} /></div>
+
             </div>
         </>
     );
