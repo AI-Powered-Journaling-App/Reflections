@@ -9,7 +9,8 @@ import {
     signOut,
     sendPasswordResetEmail,
 } from "firebase/auth";
-import { auth, googleProvider } from "../firebase";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db, googleProvider } from "../firebase";
 import { type NavigateFunction } from "react-router-dom";
 
 
@@ -70,10 +71,19 @@ export const handleSignUp = async ({
     setIsLoading(true);
 
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+
         if (auth.currentUser) {
             await updateProfile(auth.currentUser, { displayName: username });
         }
+
+        await setDoc(doc(db, "Users", user.uid), {
+            username: username,
+            email: email,
+            createdAt: serverTimestamp(),
+            signUpType: "Email",
+        }, { merge: true })
 
         await signOut(auth);
 
@@ -99,7 +109,20 @@ export const handleGoogleSignUp = async ({
     setGoogleSigningUp(true);
 
     try {
-        await signInWithPopup(auth, googleProvider);
+        const userCred = await signInWithPopup(auth, googleProvider);
+
+        const userRef = doc(db, "Users", userCred.user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+            await setDoc(userRef, {
+                username: userCred.user.displayName,
+                email: userCred.user.email,
+                createdAt: serverTimestamp(),
+                signUpType: "Google",
+            }, { merge: true });
+        }
+
         navigate("/home");
         showNotification("Sign-In Successfull!");
     } catch (err) {

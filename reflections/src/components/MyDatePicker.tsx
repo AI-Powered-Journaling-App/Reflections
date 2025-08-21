@@ -1,10 +1,19 @@
-import { useState } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // base styles
-import "../styles/MyDatePicker.css"
 
-function MyDatePicker() {
-    const [date, setDate] = useState<Date | null>(new Date());
+import "react-datepicker/dist/react-datepicker.css"; // base styles
+import "../styles/MyDatePicker.css";
+
+type MyDatePickerProps = {
+    date: Date | null,
+    setDate: React.Dispatch<React.SetStateAction<Date | null>>,
+}
+
+function MyDatePicker({ date, setDate }: MyDatePickerProps) {
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        // prevent mobile keyboard from showing
+        e.target.blur();
+    };
 
     return (
         <DatePicker
@@ -12,6 +21,7 @@ function MyDatePicker() {
             onChange={(d) => setDate(d)}
             className="date-picker"
             calendarClassName="calendar-custom"
+            onFocus={handleFocus}
         />
     );
 }

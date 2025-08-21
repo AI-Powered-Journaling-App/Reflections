@@ -33,7 +33,7 @@ const InputField = ({ type, placeholder, icon, value, onChange }: InputFieldProp
 
             {isPassword && (
                 <FontAwesomeIcon
-                    icon={showPassword ? faEyeSlash : faEye}
+                    icon={showPassword ? faEye : faEyeSlash}
                     className="eye-icon"
                     onClick={() => {
                         setShowPassword(!showPassword);

@@ -1,27 +1,33 @@
-.main-container {
-    background-color: var(--bg-card);
-    height: 400px;
-    width: 400px;
-    padding: 4rem;
-    border-radius: 1rem;
-    box-shadow: var(--drop-shadow);
+.add-entry-container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: left;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    width: 420px;
+    background-color: var(--bg-card);
+    padding: 2rem;
+    margin: 0 1rem;
+    border-radius: 1rem;
+    box-shadow: var(--drop-shadow);
+    gap: 1.5rem;
+}
+
+.title-input {
+    width: 100%;
 }
 
 .title-input input {
     width: 100%;
-    padding: 12px 16px;
-    font-size: 1rem;
+    padding: 10px 14px;
+    font-size: 1.5rem; 
     border: none;
     border-bottom: 2px solid var(--txt-secondary);
     outline: none;
     background: transparent;
-    color: var(--text-primary);
+    color: var(--txt-primary);
     font-weight: 500;
+    box-sizing: border-box;
+    transition: border 0.2s ease;
 }
 
 .title-input input:hover,
@@ -32,30 +38,117 @@
 .title-input input::placeholder {
     color: var(--txt-secondary);
     font-weight: 500;
+    font-size: 1.5rem;
+    opacity: 0.5;
 }
 
-.calender-icon {
-    margin-right: 0.4rem;
-}
-
-.date-input span {
+.date-input {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    width: 100%;
+    font-size: 1rem;
     color: var(--txt-secondary);
+}
+
+.date-input .calendar-icon{
+    color: var(--accent-primary);
+}
+
+.date-input label {
+    margin-right: 0.3rem;
+    font-weight: 500;
+    color: var(--txt-secondary);
+}
+
+.date-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color-input);
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.input-field {
+    width: 100%;
 }
 
 .input-field textarea {
     width: 100%;
-    min-height: 230px;
-    max-height: 230px;
-    resize: vertical;
-    padding: 0.5rem;
+    min-height: 200px;
+    resize: none;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    border: 2px solid var(--border-color-input);
+    font-family: 'Inter';
     outline: none;
-    border-radius: 1rem;
-    border-color: var(--border-color-input);
+    font-size: 1rem;
+    line-height: 1.4;
+    box-sizing: border-box;
+    transition: border 0.2s ease;
+}
 
+.input-field textarea:hover,
+.input-field textarea:focus {
+    border-color: var(--accent-primary);
+}
+
+.input-field textarea::placeholder{
+    font-family: 'Inter';
+    opacity: 0.5;
 }
 
 .buttons {
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
+    width: 100%;
+}
+
+.ai-insights-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    gap: 0.5rem;
+    margin: 1rem 0rem;
+    padding: 0.95rem 1.43rem;
+    border-radius: 0.6rem;
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
+    background-color: transparent;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.ai-insights-button:hover {
+    background-color: var(--accent-primary);
+    color: var(--txt-inverted);
+}
+
+@media screen and (max-width: 768px) {
+    .ai-insights-button {
+        padding: 0.7rem;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .ai-insights-button {
+        font-size: 0.80rem;
+    }
+
+    .buttons{
+        gap: 0.5rem;
+    }
+
+    .input-field textarea::placeholder{
+        font-size: 0.9rem;
+    }
+
+    .title-input input::placeholder {
+        font-size: 1.2rem;
+    }
 }
