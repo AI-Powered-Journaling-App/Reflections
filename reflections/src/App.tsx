@@ -6,26 +6,29 @@ import Login from './pages/Login';
 import './styles/App.css';
 import './styles/variables.css';
 import { Notification } from './components/Notification';
+import { ThemeProvider } from './components/Theme';
 
 function App() {
 
     return (
         <BrowserRouter>
-            <Notification>
-                <Routes>
+            <ThemeProvider>
+                <Notification>
+                    <Routes>
 
-                    <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
 
-                    <Route path="/home" element={
-                        <ProtectedRoute>
-                            <Home />
-                        </ProtectedRoute>
-                    } />
+                        <Route path="/home" element={
+                            <ProtectedRoute>
+                                <Home />
+                            </ProtectedRoute>
+                        } />
 
-                    <Route path="/" element={<Navigate to="/login" replace />} />
+                        <Route path="/" element={<Navigate to="/login" replace />} />
 
-                </Routes>
-            </Notification>
+                    </Routes>
+                </Notification>
+            </ThemeProvider>
         </BrowserRouter>
     );
 }

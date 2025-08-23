@@ -83,15 +83,22 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     </div>
 
                     <div className="button-wrapper">
-                        <Button text={isLoading ? "Signing In..." : "Sign In"} onClick={() => {
-                            handleSignIn({ email, password, setIsLoading, rememberMe: isChecked, navigate, showNotification, setEmail, setPassword });
-                        }} />
+                        <Button
+                            text={isLoading ? "Signing In..." : "Sign In"}
+                            onClick={() => {
+                                handleSignIn({ email, password, setIsLoading, rememberMe: isChecked, navigate, showNotification, setPassword });
+                            }}
+                            isLoading={isLoading}
+                        />
                     </div>
 
                     <div className="google-button-wrapper">
-                        <button onClick={() => {
-                            handleGoogleSignUp({ setGoogleSigningUp, navigate, showNotification });
-                        }} disabled={googleSigningUp}>
+                        <button
+                            onClick={() => {
+                                handleGoogleSignUp({ setGoogleSigningUp, navigate, showNotification });
+                            }}
+                            disabled={googleSigningUp}
+                        >
                             <img src={googleLogo} alt="Google" className="google-icon" />
                             {googleSigningUp ? "Signing in with Google..." : "Continue with Google"}
                         </button>

@@ -12,6 +12,7 @@ import {
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db, googleProvider } from "../firebase";
 import { type NavigateFunction } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
 
 
 type SignUpProps = {
@@ -34,7 +35,6 @@ type GoogleSignInProps = {
 
 type SignInProps = {
     email: string,
-    setEmail: React.Dispatch<React.SetStateAction<string>>,
     password: string,
     setPassword: React.Dispatch<React.SetStateAction<string>>,
     rememberMe: boolean;
@@ -91,6 +91,7 @@ export const handleSignUp = async ({
         showNotification("Account Created, Please Sign-In");
     } catch (err) {
         console.log(err);
+        showNotification(getFirebaseErrorMessage(err));
     } finally {
         setUsername("");
         setEmail("");
@@ -127,6 +128,7 @@ export const handleGoogleSignUp = async ({
         showNotification("Sign-In Successfull!");
     } catch (err) {
         console.log(err);
+        showNotification(getFirebaseErrorMessage(err));
     } finally {
         setGoogleSigningUp(false);
     }
@@ -140,7 +142,6 @@ export const handleSignIn = async ({
     setIsLoading,
     navigate,
     showNotification,
-    setEmail,
     setPassword,
 }: SignInProps) => {
     if (!email.trim()) return showNotification("Enter email!");
@@ -157,8 +158,8 @@ export const handleSignIn = async ({
         showNotification("Sign-In Successfull!");
     } catch (err) {
         console.log(err);
+        showNotification(getFirebaseErrorMessage(err));
     } finally {
-        setEmail("");
         setPassword("");
         setIsLoading(false);
     }
@@ -177,12 +178,42 @@ export const handleForgotPassword = async ({
 
     try {
         await sendPasswordResetEmail(auth, email);
-        showNotification("Password reset link sent! Check your inbox.");
+        showNotification("Reset link sent if account exists.");
     } catch (err) {
         console.log(err);
+        showNotification(getFirebaseErrorMessage(err));
     } finally {
         setEmail("");
         onClose();
         setIsLoading(false);
     }
+}
+
+function getFirebaseErrorMessage(err: unknown): string {
+    if (err instanceof FirebaseError) {
+        switch (err.code) {
+            case "auth/email-already-in-use":
+                return "This email is already registered.";
+            case "auth/invalid-email":
+                return "Invalid email address.";
+            case "auth/weak-password":
+                return "Password should be at least 6 characters.";
+            case "auth/user-not-found":
+                return "No account found with this email.";
+            case "auth/wrong-password":
+            case "auth/invalid-credential":
+                return "Invalid credentials. Please check your email and password.";
+            case "auth/account-exists-with-different-credential":
+                return "This email is already linked to another sign-in method.";
+            case "auth/too-many-requests":
+                return "Too many failed attempts. Try again later.";
+            case "auth/popup-closed-by-user":
+                return "Popup closed before completing sign-in.";
+            case "auth/network-request-failed":
+                return "Network error. Please check your connection.";
+            default:
+                return "An unexpected error occurred. Please try again.";
+        }
+    }
+    return "An unknown error occurred.";
 }

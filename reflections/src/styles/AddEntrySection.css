@@ -10,6 +10,7 @@
     border-radius: 1rem;
     box-shadow: var(--drop-shadow);
     gap: 1.5rem;
+    z-index: 10;
 }
 
 .title-input {
@@ -19,15 +20,16 @@
 .title-input input {
     width: 100%;
     padding: 10px 14px;
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
     border: none;
-    border-bottom: 2px solid var(--txt-secondary);
+    border-radius: 0px;
+    border-bottom: 2px solid var(--border-color-input);
     outline: none;
     background: transparent;
     color: var(--txt-primary);
     font-weight: 500;
     box-sizing: border-box;
-    transition: border 0.2s ease;
+    transition: border 0.3s ease;
 }
 
 .title-input input:hover,
@@ -51,7 +53,7 @@
     color: var(--txt-secondary);
 }
 
-.date-input .calendar-icon{
+.date-input .calendar-icon {
     color: var(--accent-primary);
 }
 
@@ -81,12 +83,20 @@
     padding: 1rem;
     border-radius: 0.8rem;
     border: 2px solid var(--border-color-input);
+    background-color: var(--bg-card);
+    color: var(--txt-primary);
     font-family: 'Inter';
     outline: none;
     font-size: 1rem;
     line-height: 1.4;
     box-sizing: border-box;
     transition: border 0.2s ease;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.input-field textarea::-webkit-scrollbar {
+    display: none;
 }
 
 .input-field textarea:hover,
@@ -94,7 +104,7 @@
     border-color: var(--accent-primary);
 }
 
-.input-field textarea::placeholder{
+.input-field textarea::placeholder {
     font-family: 'Inter';
     opacity: 0.5;
 }
@@ -104,6 +114,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: 1rem;
 }
 
 .ai-insights-button {
@@ -140,11 +151,11 @@
         font-size: 0.80rem;
     }
 
-    .buttons{
+    .buttons {
         gap: 0.5rem;
     }
 
-    .input-field textarea::placeholder{
+    .input-field textarea::placeholder {
         font-size: 0.9rem;
     }
 

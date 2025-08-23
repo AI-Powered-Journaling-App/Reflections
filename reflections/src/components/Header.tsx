@@ -5,9 +5,10 @@ import { auth } from "../firebase";
 import { useNotification } from "./Notification";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBookOpen, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 import "../styles/Header.css";
+import { useTheme } from "./Theme";
 
 type HeaderProps = {
     isHomeSection: boolean,
@@ -37,6 +38,7 @@ const Header = ({
     const userOptionsRef = useRef<HTMLDivElement | null>(null);
     const { showNotification } = useNotification();
     const [showUserOptions, setShowUserOption] = useState(false);
+    const { theme, toggleTheme } = useTheme();
 
 
     useEffect(() => {
@@ -130,6 +132,38 @@ const Header = ({
                                 transition: { duration: 0.2, ease: easeInOut }
                             }}
                         >
+
+                            <div className="user-options theme" onClick={toggleTheme}>
+                                <AnimatePresence mode="wait">
+                                    {theme === "light"
+                                        ? <>
+                                            <motion.div
+                                                key={"Light"}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 15, mass: 0.8 } }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                            >
+                                                <FontAwesomeIcon className="icon" icon={faSun} />
+                                            </motion.div>
+
+                                            Light
+                                        </>
+                                        : <>
+
+                                            <motion.div
+                                                key={"Dark"}
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 15, mass: 0.8 } }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                            >
+                                                <FontAwesomeIcon className="icon" icon={faMoon} />
+                                            </motion.div>
+
+                                            Dark
+                                        </>
+                                    }
+                                </AnimatePresence>
+                            </div>
 
                             <div className="user-options settings">
                                 Settings

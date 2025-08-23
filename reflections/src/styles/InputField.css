@@ -37,8 +37,9 @@
     outline: none;
     border: 2px solid var(--border-color-input);
     padding: 0.7rem 0.9rem;
-    transition: border 0.3s ease;
-    width: 100%;
+    transition: border 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bg-card);
+    color: var(--txt-primary);
 }
 
 .input-field input.with-icon {
@@ -56,6 +57,7 @@
 
 .input-field input::placeholder {
     font-family: 'Inter';
+    color: var(--txt-placeholder);
     opacity: 0.5;
 }
 

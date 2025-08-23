@@ -1,81 +1,128 @@
 import Button from './Button';
+import MyDatePicker from './MyDatePicker';
+import React, { useState } from 'react';
+import { useNotification } from './Notification';
+import { handleSaveEntry } from '../utils/AddEntryUtils';
+import { getAiInsights } from '../utils/AiInsightsUtils';
+import { motion } from 'framer-motion';
 
 import "../styles/AddEntrySection.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faFloppyDisk, faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
-import MyDatePicker from './MyDatePicker';
-import React, { useState } from 'react';
-import { useNotification } from './Notification';
-import { auth, db } from '../firebase';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-
+import { faBookmark, faCalendar, faMagicWandSparkles, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import Insights from './Insights';
+import ScatteredIcons from './ScatteredIcons';
 
 const AddEntrySection = () => {
 
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
     const [title, setTitle] = useState("");
     const [date, setDate] = useState<Date | null>(new Date());
+    const [textarea, setTextarea] = useState("");
+
+    const [tags, setTags] = useState([]);
+    const [tagColors, setTagColors] = useState<{ background: string; text: string }[]>([]);
+    const [mood, setMood] = useState("");
+    const [moodColor, setMoodColor] = useState<{ background: string; text: string }>();
+    const [insight, setInsight] = useState("");
+    const [showAiInsights, setShowAiInsights] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSavingEntry, setIsSavingEntry] = useState(false);
 
     const { showNotification } = useNotification();
 
-    const handleSaveEntry = async () => {
-        const textarea = document.querySelector("textarea")?.value || "";
+
+    const getInsights = async () => {
         if (!title.trim()) return showNotification("Enter a title please");
         if (!textarea.trim()) return showNotification("Please write something in your entry");
         if (textarea.trim().length < 30) return showNotification("Too short to save an entry");
 
-        try {
-            const user = auth.currentUser;
-            if (!user) return showNotification("Expired session please log in");
+        await getAiInsights({ textarea, showNotification, setIsLoading, setTags, setTagColors, setMood, setMoodColor, setInsight });
 
-            const userEntriesRef = collection(db, "Entries", user.uid, "User Entries");
+        showNotification("AI Insights Generated!");
 
-            await addDoc(userEntriesRef, {
-                createdAt: serverTimestamp(),
-                content: textarea,
-                date: date,
-                title: title,
-            });
-
-            setTitle("");
-            setDate(new Date());
-            (document.querySelector("textarea") as HTMLTextAreaElement).value = "";
-
-            showNotification("Entry added succesfully!")
-        } catch (err) {
-            console.log(err);
-        }
+        setShowAiInsights(true);
     }
 
     return (
-        <div className="add-entry-container">
-            <div className="title-input">
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setTitle(e.target.value)
-                    }}
-                    placeholder="Give your entry a title..."
-                />
-            </div>
 
-            <div className="date-input">
-                <FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
-                <label>Date:</label>
-                <MyDatePicker date={date} setDate={setDate} />
-            </div>
+        <>
+            <ScatteredIcons />
+            <div className="add-entry-container">
 
-            <div className="input-field">
-                <textarea placeholder="What's on your mind today?" />
-            </div>
+                <div className="title-input">
+                    <input
+                        type="text"
+                        value={title}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setTitle(e.target.value)
+                        }}
+                        placeholder="Give your entry a title..."
+                    />
+                </div>
 
-            <div className="buttons">
-                <button className="ai-insights-button"><FontAwesomeIcon icon={faMagicWandSparkles} />AI Insights</button>
-                <Button text="Save Entry" onClick={handleSaveEntry} icon={faFloppyDisk}></Button>
-            </div>
+                <div className="date-input">
+                    <FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
+                    <label>Date:</label>
+                    <MyDatePicker date={date} setDate={setDate} />
+                </div>
 
-        </div >
+                <div className="input-field">
+                    <motion.textarea
+                        value={textarea}
+                        onChange={(e) => setTextarea(e.target.value)}
+                        placeholder="What's on your mind today?"
+                        whileFocus={isMobile ? { scale: 1 } : { scale: 1.6 }}
+                        transition={{ duration: 0.4, type: "spring", stiffness: 260, damping: 20 }}
+                    />
+                </div>
+
+                <div className="buttons">
+
+                    <button
+                        className="ai-insights-button"
+                        onClick={getInsights}
+                    >
+                        {isLoading
+                            ? <><FontAwesomeIcon icon={faSpinner} spin />Generating AI Insights...</>
+                            : <><FontAwesomeIcon icon={faMagicWandSparkles} />AI Insights</>
+                        }
+                    </button>
+
+                    <Button
+                        text={isSavingEntry ? "Saving Entry..." : "Save Entry"}
+                        onClick={() => {
+                            handleSaveEntry({
+                                title, setTitle, date, setDate, textarea, setTextarea,
+                                setIsSavingEntry, showNotification, tags, tagColors, mood, moodColor, insight,
+                                setTags, setTagColors, setMood, setMoodColor, setInsight
+                            });
+                        }}
+                        icon={faBookmark}
+                        isLoading={isSavingEntry}
+                    />
+
+                </div>
+
+                {showAiInsights &&
+                    <Insights
+                        title={title}
+                        mood={mood}
+                        moodColor={moodColor}
+                        tags={tags}
+                        tagColors={tagColors}
+                        insight={insight}
+                        onClose={() => {
+                            setShowAiInsights(false);
+                        }}
+                    />
+                }
+
+            </div >
+        </>
+
     );
 }
 
