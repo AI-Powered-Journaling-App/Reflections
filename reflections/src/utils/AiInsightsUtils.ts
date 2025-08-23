@@ -15,8 +15,6 @@ export const getAiInsights = async ({ textarea, setTags, setTagColors, setMood, 
     setIsLoading(true);
 
     try {
-        alert("api called");
-
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
