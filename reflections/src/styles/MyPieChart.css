@@ -1,0 +1,59 @@
+.no-entries {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10.5rem 10rem;
+    color: var(--txt-secondary);
+    font-size: 1rem;
+    font-style: italic;
+    border: 1px dashed var(--border-color-input);
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+
+.chart-card {
+    background-color: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--drop-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.chart-title {
+    color: var(--txt-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus,
+.recharts-responsive-container:focus {
+    outline: none !important;
+}
+
+@media screen and (max-width: 650px) {
+    .no-entries {
+        text-align: center;
+        padding: 6rem;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .chart-card {
+        padding: 0.8rem;
+    }
+
+    .chart-title {
+        margin-bottom: 0;
+    }
+
+    .no-entries {
+        margin-top: 1rem;
+    }
+}

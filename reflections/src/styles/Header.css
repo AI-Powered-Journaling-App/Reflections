@@ -1,29 +1,43 @@
 .header {
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
     background-color: var(--bg-card);
     box-shadow: var(--drop-shadow);
-    z-index: 10;
+    z-index: 15;
 }
 
 .header-content {
     margin: 0 auto;
-    height: 100%;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
 }
 
-.title,
-.nav,
-.user-container {
-    gap: 10px;
-    flex: 1;
+.title {
     display: flex;
     align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    font-weight: 500;
+    margin-bottom: -0.4rem;
+    flex-wrap: wrap;
+}
+
+.user-container {
+    display: flex;
+    justify-content: flex-end;
+    flex: 0 0 auto;
 }
 
 .title {
@@ -33,10 +47,8 @@
 .nav {
     flex: auto;
     justify-content: center;
-    gap: 4rem;
+    gap: 3rem;
     font-weight: 500;
-    cursor: pointer;
-    margin-bottom: -0.4rem;
 }
 
 .user-container {
@@ -55,13 +67,8 @@
     background-color: var(--accent-secondary);
 }
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.nav-items {
     cursor: pointer;
-    position: relative;
-    padding: 5px 0;
     transition: color 0.3s ease;
 }
 
@@ -117,6 +124,11 @@
 }
 
 @media screen and (max-width: 800px) {
+    .nav {
+        gap: 2.5rem;
+        font-size: 0.9rem;
+    }
+
     .nav-items {
         gap: 1rem;
         font-size: 0.9rem;
@@ -134,7 +146,13 @@
 
     .nav {
         flex: auto;
-        gap: 3rem;
+        gap: 2rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .nav{
+        gap: 1rem;
     }
 }
 
@@ -145,7 +163,7 @@
 
     .nav {
         flex: auto;
-        gap: 2rem;
+        gap: 1rem;
     }
 
     .user-options-container {

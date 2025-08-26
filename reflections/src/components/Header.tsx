@@ -9,6 +9,7 @@ import { faUser, faBookOpen, faSun, faMoon } from '@fortawesome/free-solid-svg-i
 
 import "../styles/Header.css";
 import { useTheme } from "./Theme";
+import ConfirmPrompt from "./ConfirmPrompt";
 
 type HeaderProps = {
     isHomeSection: boolean,
@@ -36,9 +37,12 @@ const Header = ({
 
     const userButtonRef = useRef<HTMLDivElement | null>(null);
     const userOptionsRef = useRef<HTMLDivElement | null>(null);
+
     const { showNotification } = useNotification();
-    const [showUserOptions, setShowUserOption] = useState(false);
     const { theme, toggleTheme } = useTheme();
+
+    const [showUserOptions, setShowUserOption] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
 
     useEffect(() => {
@@ -60,14 +64,14 @@ const Header = ({
     }, [showUserOptions]);
 
 
-    const handleLogOut = async () => {
+    const handleLogout = async () => {
 
         try {
             await signOut(auth);
             showNotification("Logged out successfully!");
         } catch (err) {
             console.log(err);
-            showNotification("Error logging out");
+            showNotification("Error logging out.");
         }
 
     }
@@ -165,11 +169,7 @@ const Header = ({
                                 </AnimatePresence>
                             </div>
 
-                            <div className="user-options settings">
-                                Settings
-                            </div>
-
-                            <div className="user-options logout" onClick={handleLogOut}>
+                            <div className="user-options logout" onClick={() => setShowConfirmation(true)}>
                                 LogOut
                             </div>
 
@@ -178,6 +178,14 @@ const Header = ({
                 </AnimatePresence>
 
             </div>
+
+            {showConfirmation &&
+                <ConfirmPrompt
+                    prompt="Do you want to Logout?"
+                    onNo={() => setShowConfirmation(false)}
+                    onYes={handleLogout}
+                />
+            }
 
         </div>
     );

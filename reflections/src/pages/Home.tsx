@@ -4,6 +4,7 @@ import HomeSection from "../components/HomeSection";
 import AddEntrySection from "../components/AddEntrySection";
 import YourEntriesSection from "../components/YourEntriesSection";
 import { useState } from "react";
+import ScatteredIcons from "../components/ScatteredIcons";
 
 const Home = () => {
 
@@ -25,8 +26,13 @@ const Home = () => {
                 />
 
                 <div className="center-content">
+                    <ScatteredIcons />
 
-                    {isHomeSection && <HomeSection />}
+                    {isHomeSection && <HomeSection
+                        setIsHomeSection={setIsHomeSection}
+                        setIsAddEntrySection={setIsAddEntrySection}
+                        setIsYourEntriesSection={setIsYourEntriesSection}
+                    />}
 
                     {isAddEntrySection && <AddEntrySection />}
 

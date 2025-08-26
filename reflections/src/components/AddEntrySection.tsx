@@ -3,6 +3,7 @@ import MyDatePicker from './MyDatePicker';
 import React, { useState } from 'react';
 import { useNotification } from './Notification';
 import { handleSaveEntry } from '../utils/AddEntryUtils';
+import { generateTitle } from '../utils/AiInsightsUtils';
 import { getAiInsights } from '../utils/AiInsightsUtils';
 import { motion } from 'framer-motion';
 
@@ -11,7 +12,6 @@ import "../styles/AddEntrySection.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faCalendar, faMagicWandSparkles, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Insights from './Insights';
-import ScatteredIcons from './ScatteredIcons';
 
 const AddEntrySection = () => {
 
@@ -30,6 +30,7 @@ const AddEntrySection = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSavingEntry, setIsSavingEntry] = useState(false);
+    const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
 
     const { showNotification } = useNotification();
 
@@ -46,10 +47,22 @@ const AddEntrySection = () => {
         setShowAiInsights(true);
     }
 
+    const handleGenerateTitle = async () => {
+        if (!textarea.trim()) return showNotification("Write something first to generate a title");
+
+        setIsGeneratingTitle(true); // optional: show spinner on icon
+        const newTitle = await generateTitle(textarea, showNotification);
+        setIsGeneratingTitle(false);
+
+        if (newTitle) {
+            setTitle(newTitle);
+            showNotification("Title Generated!");
+        }
+    };
+
     return (
 
-        <>
-            <ScatteredIcons />
+        <div className="add-entry-main-container">
             <div className="add-entry-container">
 
                 <div className="title-input">
@@ -60,6 +73,12 @@ const AddEntrySection = () => {
                             setTitle(e.target.value)
                         }}
                         placeholder="Give your entry a title..."
+                    />
+                    <FontAwesomeIcon
+                        onClick={handleGenerateTitle}
+                        className={`title-icon ${isGeneratingTitle ? "with-margin" : ""}`}
+                        icon={isGeneratingTitle ? faSpinner : faMagicWandSparkles}
+                        spin={isGeneratingTitle}
                     />
                 </div>
 
@@ -121,7 +140,7 @@ const AddEntrySection = () => {
                 }
 
             </div >
-        </>
+        </div>
 
     );
 }

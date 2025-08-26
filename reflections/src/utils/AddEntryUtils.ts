@@ -2,6 +2,8 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { getAiInsights } from "./AiInsightsUtils";
 
+import { MOOD_COLORS } from "./MoodColors";
+
 type SaveEntryProps = {
     title: string,
     setTitle: React.Dispatch<React.SetStateAction<string>>,
@@ -23,7 +25,8 @@ type SaveEntryProps = {
     showNotification: (text: string) => void,
 }
 
-export const handleSaveEntry = async ({ title, setTitle, date, setDate, textarea, setTextarea, setIsSavingEntry, showNotification,
+export const handleSaveEntry = async ({
+    title, setTitle, date, setDate, textarea, setTextarea, setIsSavingEntry, showNotification,
     tags, tagColors, mood, moodColor, insight, setTags, setTagColors, setMood, setMoodColor, setInsight
 }: SaveEntryProps) => {
     if (!title.trim()) return showNotification("Enter a title please");
@@ -32,18 +35,46 @@ export const handleSaveEntry = async ({ title, setTitle, date, setDate, textarea
 
     setIsSavingEntry(true);
 
-    if (!insight || insight === "") {
-        await getAiInsights({
-            textarea, showNotification, setIsLoading: setIsSavingEntry,
-            setMood, setTags, setTagColors, setMoodColor, setInsight
-        });
-
-        setTimeout(() => {
-            // waiting for the response
-        }, 1000);
-    }
+    let finalInsight = insight;
+    let finalMood = mood;
+    let finalTags = tags;
+    let finalTagColors = tagColors;
+    let finalMoodColor = moodColor; // Use existing moodColor
 
     try {
+        // Generate insights if they don't exist
+        if (!insight || insight === "") {
+            const insights = await getAiInsights({
+                textarea, showNotification, setIsLoading: setIsSavingEntry,
+                setMood, setTags, setTagColors, setMoodColor, setInsight
+            });
+
+            if (insights) {
+                // Update state for UI
+                setMood(insights.mood);
+                setTags(insights.tags || []);
+                setInsight(insights.insights);
+                setTagColors(insights.tagColors);
+
+                // Use fresh values for saving
+                finalInsight = insights.insights;
+                finalMood = insights.mood;
+                finalTags = insights.tags || [];
+                finalTagColors = insights.tagColors;
+
+                // Get mood color from MOOD_COLORS constant instead of state
+                finalMoodColor = MOOD_COLORS[insights.mood] || MOOD_COLORS["Calm"];
+
+                // Also update the state for UI consistency
+                setMoodColor(finalMoodColor);
+            }
+        }
+
+        // Ensure we have a valid mood color
+        if (!finalMoodColor && finalMood) {
+            finalMoodColor = MOOD_COLORS[finalMood] || MOOD_COLORS["Calm"];
+        }
+
         const user = auth.currentUser;
         if (!user) return showNotification("Expired session please log in");
 
@@ -51,22 +82,25 @@ export const handleSaveEntry = async ({ title, setTitle, date, setDate, textarea
 
         await addDoc(userEntriesRef, {
             createdAt: serverTimestamp(),
-            insight: insight,
-            tagColors: tagColors,
-            tags: tags,
-            moodColor: moodColor
-                ? { background: moodColor.background, text: moodColor.text }
+            insight: finalInsight,
+            tagColors: finalTagColors,
+            tags: finalTags,
+            moodColor: finalMoodColor
+                ? { background: finalMoodColor.background, text: finalMoodColor.text }
                 : null,
-            mood: mood,
+            mood: finalMood,
             content: textarea,
             date: date,
             title: title,
         });
 
-        showNotification("Entry added succesfully!")
+        showNotification("Entry added successfully!");
+
     } catch (err) {
-        console.log(err);
+        console.error("Error saving entry:", err);
+        showNotification("Failed to save entry");
     } finally {
+        // Reset all states
         setTitle("");
         setDate(new Date());
         setTextarea("");
@@ -75,7 +109,6 @@ export const handleSaveEntry = async ({ title, setTitle, date, setDate, textarea
         setMood("");
         setMoodColor(undefined);
         setInsight("");
-
         setIsSavingEntry(false);
     }
 }
