@@ -175,6 +175,10 @@
         padding: 1.5rem 2rem;
     }
     
+    .entry-cards {
+        gap: 2.5rem;
+    }
+    
     .entry-title {
         font-size: 1.1rem;
     }
