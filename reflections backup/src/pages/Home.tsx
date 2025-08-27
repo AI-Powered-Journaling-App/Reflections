@@ -1,11 +1,11 @@
-import Header from "../components/layout/Header/Header";
-import HomeSection from "../components/ui/HomeSection/HomeSection";
-import AddEntrySection from "../components/forms/AddEntrySection/AddEntrySection";
-import YourEntriesSection from "../components/entries/YourEntriesSection/YourEntriesSection";
+import Header from "../components/Header";
+import HomeSection from "../components/HomeSection";
+import AddEntrySection from "../components/AddEntrySection";
+import YourEntriesSection from "../components/YourEntriesSection";
 import { useState } from "react";
-import ScatteredIcons from "../components/ui/ScatteredIcons/ScatteredIcons";
+import ScatteredIcons from "../components/ScatteredIcons";
 
-import '../styles/ui/Home.css';
+import '../styles/Home.css';
 
 const Home = () => {
 

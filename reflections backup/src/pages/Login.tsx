@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import CNACard from '../components/entries/CNACard/CNACard';
-import LoginCard from '../components/forms/LoginCard/LoginCard';
+import CNACard from '../components/CNACard';
+import LoginCard from '../components/LoginCard';
 import loginImageLight from "../assets/login-page-img.png";
 import loginImageDark from "../assets/login-page-img-dark.png";
-import ScatteredIcons from '../components/ui/ScatteredIcons/ScatteredIcons';
-import { useTheme } from '../components/layout/Theme/Theme';
+import ScatteredIcons from '../components/ScatteredIcons';
+import { useTheme } from '../components/Theme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 
-import '../styles/forms/Login.css';
+import '../styles/Login.css';
 
 const cardVariants = {
     initial: {

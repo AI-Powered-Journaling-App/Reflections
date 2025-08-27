@@ -1,12 +1,12 @@
-import ProtectedRoute from './components/layout/ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 
 import './styles/App.css';
 import './styles/variables.css';
-import { Notification } from './components/common/Notification/Notification';
-import { ThemeProvider } from './components/layout/Theme/Theme';
+import { Notification } from './components/Notification';
+import { ThemeProvider } from './components/Theme';
 
 function App() {
 
