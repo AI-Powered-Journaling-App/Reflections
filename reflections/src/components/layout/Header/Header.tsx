@@ -6,7 +6,8 @@ import { useNotification } from "../../common/Notification/Notification";
 import { useTheme } from "../Theme/Theme";
 import ConfirmPrompt from "../../common/ConfirmPrompt/ConfirmPrompt";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBookOpen, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import Logo from "../../../assets/logo.png"
 
 import "../../../styles/layout/Header.css";
 
@@ -80,7 +81,7 @@ const Header = ({
             <div className="header-content">
 
                 <div className="title">
-                    <FontAwesomeIcon icon={faBookOpen} />
+                    <img className="logo" src={Logo} />
                     <h2>Reflections</h2>
                 </div>
 
