@@ -25,6 +25,7 @@ type HomeSectionProps = {
 
 
 const HomeSection: React.FC<HomeSectionProps> = ({ setIsHomeSection, setIsAddEntrySection, setIsYourEntriesSection }) => {
+    
     const [moodData, setMoodData] = useState<MoodData[]>([]);
     const [otherStats, setOtherStats] = useState<OtherStats>({
         mostLoggedMood: null,
@@ -34,7 +35,9 @@ const HomeSection: React.FC<HomeSectionProps> = ({ setIsHomeSection, setIsAddEnt
 
     return (
         <div className="main-home-container">
+            
             <div className="analytics-container">
+
                 <div className="piechart-container">
                     <MyPieChart
                         onDataLoaded={(data, stats) => {
@@ -51,6 +54,7 @@ const HomeSection: React.FC<HomeSectionProps> = ({ setIsHomeSection, setIsAddEnt
                 <div className="other-statistics-container">
                     <OtherStatistics stats={otherStats} />
                 </div>
+
             </div>
 
             <RecentEntriesCard
@@ -58,7 +62,6 @@ const HomeSection: React.FC<HomeSectionProps> = ({ setIsHomeSection, setIsAddEnt
                 setIsAddEntrySection={setIsAddEntrySection}
                 setIsYourEntriesSection={setIsYourEntriesSection}
             />
-
 
         </div>
     );

@@ -4,7 +4,7 @@
     justify-content: center;
     flex-direction: column;
     background-color: var(--bg-primary);
-    border: 2px solid var(--accent-primary);
+    border: 2px solid var(--border-color-input);
     border-radius: 1rem;
     padding: 2rem 3rem;
     text-align: center;
@@ -24,7 +24,7 @@
 
 .prompt-buttons button {
     cursor: pointer;
-    border: 2px solid var(--border-color-input);
+    border: none;
     border-radius: 10px;
     background-color: var(--bg-card);
     padding: 0.5rem 1rem;

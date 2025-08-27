@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +6,7 @@ import MyDatePicker from "./MyDatePicker";
 import { updateEntry } from "../utils/UpdateEntryUtils";
 import { getAiInsights } from "../utils/AiInsightsUtils";
 import { useNotification } from './Notification';
+
 import "../styles/Overlay.css";
 import "../styles/EditEntryCard.css";
 
@@ -21,6 +22,7 @@ type EditEntryCardProps = {
 };
 
 const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate }) => {
+
     const [title, setTitle] = useState(entry.title);
     const [date, setDate] = useState<Date | null>(
         entry.date?.toDate ? entry.date.toDate() : new Date()
@@ -30,6 +32,26 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
     const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
 
     const { showNotification } = useNotification();
+
+    const editEntryCardRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+
+        const handleClickOutside = (e: MouseEvent) => {
+
+            if (editEntryCardRef.current && !editEntryCardRef.current.contains(e.target as Node)){
+                onClose();
+            };
+
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);  
+        };
+
+    }, []);
 
     // Helper function to check if content has changed significantly
     const hasSignificantContentChange = () => {
@@ -93,7 +115,7 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
                 // showNotification("Generating new insights...");
 
                 try {
-                    // Temporary state setters for AI insights (we won't use these but API needs them)
+                    // Temporary state setters for AI insights (we don't use these API needs them)
                     const tempSetters = {
                         setTags: () => { },
                         setTagColors: () => { },
@@ -120,12 +142,14 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
                             insight: insights.insights
                         };
                     }
+
                 } catch (error) {
                     console.error("Error generating insights:", error);
                     showNotification("Failed to generate new insights, saving without them");
                 } finally {
                     setIsGeneratingInsights(false);
                 }
+
             }
 
             await updateEntry(entry.id, updatedData);
@@ -145,17 +169,21 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
         } finally {
             setIsUpdating(false);
         }
+
     };
 
     return (
         <div className="overlay">
+
             <motion.div
+                ref={editEntryCardRef}
                 className="edit-entry-card"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, type: "spring", stiffness: 260, damping: 20 }}
             >
+
                 <FontAwesomeIcon
                     icon={faClose}
                     className="close-btn"
@@ -202,7 +230,9 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
                         {isUpdating || isGeneratingInsights ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
+
             </motion.div>
+
         </div>
     );
 };

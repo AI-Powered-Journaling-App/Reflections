@@ -1,5 +1,7 @@
-import "../styles/CustomLegend.css";
 import { MOOD_COLORS } from "../utils/MoodColors";
+import { easeInOut, motion } from "framer-motion";
+
+import "../styles/CustomLegend.css";
 
 type LegendProps = {
     data: { mood: string; value: number }[];
@@ -11,7 +13,9 @@ const CustomLegend = ({ data }: LegendProps) => {
 
     // fallback to include all moods, even if value = 0
     const allMoods = Object.keys(MOOD_COLORS).map((mood) => {
+
         const moodData = data.find((item) => item.mood === mood);
+
         return {
             mood,
             value: moodData ? moodData.value : 0,
@@ -19,13 +23,27 @@ const CustomLegend = ({ data }: LegendProps) => {
             color: MOOD_COLORS[mood].background,
             textColor: MOOD_COLORS[mood].text,
         };
+
     });
 
     return (
-        <div className="legend-card">
-            <label className="legend-title">Mood Legend</label>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{
+                opacity: 1, scale: 1,
+                transition: { duration: 1, type: "spring", stiffness: 250, damping: 30, ease: easeInOut }
+            }}
+            className="legend-card"
+        >
+
+            <label className="legend-title">
+                Mood Legend
+            </label>
+
             <ul className="legend-list">
+
                 {allMoods.map((item, index) => (
+
                     <li key={index} className="legend-item">
 
                         <span
@@ -52,9 +70,12 @@ const CustomLegend = ({ data }: LegendProps) => {
                         </span>
 
                     </li>
+
                 ))}
+
             </ul>
-        </div>
+
+        </motion.div>
     );
 };
 

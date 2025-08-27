@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InputField from "./InputField";
 import Button from "./Button";
 import { useNotification } from "./Notification";
 import { handleForgotPassword } from "../utils/LoginUtils";
 import { motion } from "framer-motion";
-
 import { faEnvelope, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -22,6 +21,27 @@ const ForgotPassword = ({ onClose }: ForgotPasswordProps) => {
 
     const { showNotification } = useNotification();
 
+    const forgotPasswordCardRef = useRef<HTMLDivElement | null>(null);
+
+
+    useEffect(() => {
+
+        const handleClickOutside = (e: MouseEvent) => {
+
+            if (forgotPasswordCardRef.current && !forgotPasswordCardRef.current.contains(e.target as Node)) {
+                onClose();
+            };
+
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+
+    }, []);
+
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         handleForgotPassword({ email, setIsLoading, showNotification, setEmail, onClose });
@@ -29,13 +49,16 @@ const ForgotPassword = ({ onClose }: ForgotPasswordProps) => {
 
     return (
         <div className="overlay">
+
             <motion.div
+                ref={forgotPasswordCardRef}
                 className="forgot-modal"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, type: "spring", stiffness: 260, damping: 20 }}
             >
+
                 <div className="forgot-header">
                     <h2>Forgot Password</h2>
                     <span title="Close" className="close-btn" onClick={onClose}>
@@ -57,7 +80,9 @@ const ForgotPassword = ({ onClose }: ForgotPasswordProps) => {
                         onClick={onSubmit}
                     />
                 </form>
+
             </motion.div>
+
         </div>
     );
 };

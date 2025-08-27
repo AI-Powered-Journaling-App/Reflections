@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import ContentCard from "./ContentCard";
 
 import "../styles/YourEntriesSection.css";
-import ContentCard from "./ContentCard";
 
 type RecentEntriesCardProps = {
     setIsHomeSection: React.Dispatch<React.SetStateAction<boolean>>,
@@ -18,6 +18,7 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
     const [showContentCard, setShowContentCard] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState<any | null>(null);
 
+
     useEffect(() => {
         const fetchRecentEntries = async () => {
             try {
@@ -31,7 +32,7 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
                     "User Entries"
                 );
 
-                // ✅ Get only the 3 latest entries
+                // getting only 3 recent entries
                 const q = query(userEntriesRef, orderBy("createdAt", "desc"), limit(3));
 
                 const snapshot = await getDocs(q);
@@ -136,6 +137,7 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
                     onClose={() => setShowContentCard(false)}
                 />
             }
+            
         </div>
     );
 };

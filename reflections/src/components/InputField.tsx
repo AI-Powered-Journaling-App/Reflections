@@ -1,8 +1,8 @@
-import "../styles/InputField.css";
-
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+
+import "../styles/InputField.css";
 
 type InputFieldProps = {
     type: string;

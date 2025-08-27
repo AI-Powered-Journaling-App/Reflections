@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserMoodData } from "../utils/HomeSectionUtils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { easeInOut, motion } from "framer-motion";
 
 import "../styles/MyPieChart.css";
 
@@ -32,6 +33,7 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ onDataLoaded }) => {
         streak: 0,
     });
 
+
     useEffect(() => {
         const unsub = getUserMoodData(
             (data: MoodData[]) => setMoodData(data),
@@ -49,15 +51,30 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ onDataLoaded }) => {
 
     return (
         <div className="chart-card">
-            <h3 className="chart-title">Mood Distribution</h3>
+
+            <motion.h3
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{
+                    opacity: 1, scale: 1,
+                    transition: { duration: 1, type: "spring", stiffness: 250, damping: 30, ease: easeInOut}
+                }}
+                className="chart-title"
+            >
+                Mood Distribution
+            </motion.h3>
 
             {moodData.length === 0 ? (
+
                 <div className="no-entries">
                     <p>No entries yet</p>
                 </div>
+
             ) : (
+
                 <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+        
                     <PieChart>
+
                         <Pie
                             data={moodData}
                             dataKey="value"
@@ -83,6 +100,7 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ onDataLoaded }) => {
                                 />
                             ))}
                         </Pie>
+
                         <Tooltip
                             contentStyle={{
                                 padding: "0.5rem 1rem",
@@ -93,15 +111,20 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ onDataLoaded }) => {
                             itemStyle={{ color: "var(--txt-primary)" }}
                             labelStyle={{ color: "var(--txt-primary)" }}
                         />
+
                     </PieChart>
+                    
                 </ResponsiveContainer>
+
             )}
+
         </div>
     );
 }
 
 export default MyPieChart;
 
+// helper functions
 const renderCustomLabelLine = ({ points }: any) => {
     return (
         <polyline
@@ -119,7 +142,7 @@ const renderCustomLabel = (props: any) => {
     if (!name) return null;
 
     const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 30; // place label outside
+    const radius = outerRadius + 30;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -127,7 +150,7 @@ const renderCustomLabel = (props: any) => {
         <text
             x={x}
             y={y}
-            fill="var(--txt-primary)" // consistent color
+            fill="var(--txt-primary)"
             textAnchor={x > cx ? "start" : "end"}
             dominantBaseline="central"
             fontSize={14}

@@ -6,12 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { handleGoogleSignUp, handleSignIn } from '../utils/LoginUtils';
-
+import { useNotification } from './Notification';
 import googleLogo from "../assets/google.png";
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 import '../styles/LoginCard.css';
-import { useNotification } from './Notification';
 
 type LoginCardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +28,7 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
 
     const { showNotification } = useNotification();
 
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -38,9 +38,9 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
         return () => unsubscribe();
     }, []);
 
-
     return (
         <>
+
             <div className="login-card">
 
                 <div className="login-header">
@@ -107,9 +107,13 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
                     <div className="cna-link">
                         <span>Don't have an account? <span className="custom-link" onClick={() => setIsLogin(false)}>Sign Up</span></span>
                     </div>
+                    
                 </div>
+
             </div>
+
             {isForgotOpen && <ForgotPassword onClose={() => setIsForgotOpen(false)} />}
+
         </>
     );
 }

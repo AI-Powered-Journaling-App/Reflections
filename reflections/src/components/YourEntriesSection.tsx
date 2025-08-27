@@ -2,21 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { AnimatePresence, easeInOut, motion } from "framer-motion";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faMagicWandSparkles,
-    faEllipsis,
-} from "@fortawesome/free-solid-svg-icons";
-
+import { faMagicWandSparkles, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { deleteEntry } from "../utils/DeleteEntryUtils"
-
 import { useNotification } from './Notification';
 import ConfirmPrompt from "./ConfirmPrompt";
-
 import ContentCard from "./ContentCard";
 import Insights from "./Insights";
 import EditEntryCard from "./EditEntryCard";
+
 import "../styles/Overlay.css"
 import "../styles/YourEntriesSection.css";
 
@@ -38,6 +32,7 @@ const YourEntriesSection = () => {
     const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
     const { showNotification } = useNotification();
+
 
     const fetchEntries = async () => {
         try {
@@ -117,15 +112,15 @@ const YourEntriesSection = () => {
     };
 
     const handleUpdateEntry = async (updatedEntry: any) => {
-        // Update the entries array with the updated entry
+        // Update the entries array with the new entry array
         setEntries((prev) =>
             prev.map((entry) =>
                 entry.id === updatedEntry.id ? updatedEntry : entry
             )
         );
 
-        // Also refetch entries to ensure we have the latest data from Firebase
-        // This ensures tags, moods, and insights are properly updated
+        // refetching entries.
+        // This makes sure we update tags, moods, and insights.
         await fetchEntries();
     };
 
@@ -153,16 +148,21 @@ const YourEntriesSection = () => {
     return (
         <>
             <div className="your-entry-div">
+
                 <div className="entry-cards">
+
                     {entries.length === 0 ? (
                         <p>No entries yet.</p>
                     ) : (
                         entries.map((entry) => (
+
                             <div key={entry.id} className="single-entry-card" onClick={() => {
                                 setSelectedEntry(entry),
                                     setShowContentCard(true)
                             }}>
+
                                 <div className="entry-left">
+
                                     {/* title + tags */}
                                     <div className="entry-header">
                                         <span className="entry-title">{entry.title}</span>
@@ -198,10 +198,13 @@ const YourEntriesSection = () => {
                                             ? entry.content.slice(0, 80) + (entry.content.length > 80 ? "..." : "")
                                             : ""}
                                     </div>
+
                                 </div>
 
                                 <div className="entry-right">
+
                                     <div className="action-buttons">
+
                                         <button ref={triggerButtonRef} onClick={(e) => {
                                             e.stopPropagation();
                                             setSelectedEntry(entry);
@@ -212,6 +215,7 @@ const YourEntriesSection = () => {
                                                 icon={faEllipsis}
                                             />
                                         </button>
+
                                         <button onClick={(e) => {
                                             e.stopPropagation();
                                             hadnleAiInsightpopup(entry)
@@ -221,12 +225,18 @@ const YourEntriesSection = () => {
                                                 icon={faMagicWandSparkles}
                                             />
                                         </button>
+
                                     </div>
+
                                 </div>
+
                             </div>
+
                         ))
                     )}
+
                 </div>
+
             </div>
 
             <AnimatePresence>
@@ -255,12 +265,15 @@ const YourEntriesSection = () => {
                             transition: { duration: 0.2, ease: easeInOut },
                         }}
                     >
+
                         <div className="more-option edit" onClick={handleEditEntry}>
                             <span>Edit</span>
                         </div>
+
                         <div className="more-option delete">
                             <span onClick={() => setDeleteConfrim(true)}>Delete</span>
                         </div>
+
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -305,6 +318,7 @@ const YourEntriesSection = () => {
                     onUpdate={handleUpdateEntry}
                 />
             )}
+
         </>
     );
 };

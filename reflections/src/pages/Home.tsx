@@ -1,10 +1,11 @@
 import Header from "../components/Header";
-import '../styles/Home.css'
 import HomeSection from "../components/HomeSection";
 import AddEntrySection from "../components/AddEntrySection";
 import YourEntriesSection from "../components/YourEntriesSection";
 import { useState } from "react";
 import ScatteredIcons from "../components/ScatteredIcons";
+
+import '../styles/Home.css';
 
 const Home = () => {
 
@@ -15,6 +16,7 @@ const Home = () => {
     return (
         <>
             <div className="main-content">
+
                 <Header
                     isHomeSection={isHomeSection}
                     isAddEntrySection={isAddEntrySection}
@@ -26,6 +28,7 @@ const Home = () => {
                 />
 
                 <div className="center-content">
+
                     <ScatteredIcons />
 
                     {isHomeSection && <HomeSection
@@ -40,9 +43,8 @@ const Home = () => {
 
                 </div>
 
-                {/* footer */}
-
             </div>
+            
         </>
     );
 }

@@ -2,15 +2,14 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import CNACard from '../components/CNACard';
 import LoginCard from '../components/LoginCard';
-
-import '../styles/Login.css';
-
 import loginImageLight from "../assets/login-page-img.png";
 import loginImageDark from "../assets/login-page-img-dark.png";
 import ScatteredIcons from '../components/ScatteredIcons';
 import { useTheme } from '../components/Theme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+
+import '../styles/Login.css';
 
 const cardVariants = {
     initial: {
@@ -31,20 +30,24 @@ const cardVariants = {
 }
 
 const Login = () => {
-    const [isLogin, setIsLogin] = useState(true);
 
+    const [isLogin, setIsLogin] = useState(true);
     const { theme, toggleTheme } = useTheme();
 
     return (
         <>
             <div className="main-wrapper">
+
                 <ScatteredIcons />
+
                 <div className="content">
+
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                     >
+
                         <AnimatePresence mode='wait'>
                             {isLogin ?
                                 <motion.div
@@ -67,6 +70,7 @@ const Login = () => {
                                     <CNACard setIsLogin={setIsLogin} />
                                 </motion.div>}
                         </AnimatePresence>
+
                     </motion.div>
 
                     <motion.div
@@ -74,16 +78,21 @@ const Login = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                     >
+
                         <div className="image-container">
                             <img src={theme === "light" ? loginImageLight : loginImageDark} alt="login-image" className='login-image' />
                             <p>"Your journal is the story only you can tell."</p>
                         </div>
+
                     </motion.div>
+
                 </div>
 
                 <div className="theme-button" onClick={toggleTheme}>
+
                     <AnimatePresence mode="wait">
                         {theme === "light"
+                        
                             ? <>
                                 <motion.div
                                     key={"Light"}
@@ -97,6 +106,7 @@ const Login = () => {
 
                                 Light
                             </>
+
                             : <>
 
                                 <motion.div
@@ -113,9 +123,11 @@ const Login = () => {
                             </>
                         }
                     </AnimatePresence>
+
                 </div>
 
             </div>
+            
         </>
     );
 }

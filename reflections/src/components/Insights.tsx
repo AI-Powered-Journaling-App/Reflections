@@ -5,6 +5,7 @@ import { faClose, faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons"
 
 import "../styles/Overlay.css";
 import "../styles/Insights.css";
+import { useEffect, useRef } from "react";
 
 type InsightsProps = {
     title: string,
@@ -17,10 +18,33 @@ type InsightsProps = {
 };
 
 const Insights: React.FC<InsightsProps> = ({ title, mood, moodColor, tags, tagColors, insight, onClose }) => {
+
+    const insightsCardRef = useRef<HTMLDivElement | null>(null);
+
+
+    useEffect(() => {
+
+        const handleClickOutside = (e: MouseEvent) => {
+
+            if (insightsCardRef.current && !insightsCardRef.current.contains(e.target as Node)){
+                onClose();
+            }
+
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+    }, []);
+
     return (
         <div className="overlay">
 
             <motion.div
+                ref={insightsCardRef}
                 className="insight-card"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

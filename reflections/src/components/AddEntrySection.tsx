@@ -6,12 +6,12 @@ import { handleSaveEntry } from '../utils/AddEntryUtils';
 import { generateTitle } from '../utils/AiInsightsUtils';
 import { getAiInsights } from '../utils/AiInsightsUtils';
 import { motion } from 'framer-motion';
+import Insights from './Insights';
 
 import "../styles/AddEntrySection.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark, faCalendar, faMagicWandSparkles, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import Insights from './Insights';
 
 const AddEntrySection = () => {
 
@@ -38,7 +38,7 @@ const AddEntrySection = () => {
     const getInsights = async () => {
         if (!title.trim()) return showNotification("Enter a title please");
         if (!textarea.trim()) return showNotification("Please write something in your entry");
-        if (textarea.trim().length < 30) return showNotification("Too short to save an entry");
+        if (textarea.trim().length < 30) return showNotification("Too short to generate insights");
 
         await getAiInsights({ textarea, showNotification, setIsLoading, setTags, setTagColors, setMood, setMoodColor, setInsight });
 
@@ -61,8 +61,8 @@ const AddEntrySection = () => {
     };
 
     return (
-
         <div className="add-entry-main-container">
+
             <div className="add-entry-container">
 
                 <div className="title-input">
@@ -140,8 +140,8 @@ const AddEntrySection = () => {
                 }
 
             </div >
-        </div>
 
+        </div>
     );
 }
 

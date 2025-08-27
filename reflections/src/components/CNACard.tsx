@@ -4,11 +4,11 @@ import InputField from './InputField';
 import googleLogo from "../assets/google.png";
 import { useNavigate } from "react-router-dom";
 import { handleGoogleSignUp, handleSignUp } from "../utils/LoginUtils";
-
+import { useNotification } from "./Notification";
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
+
 import '../styles/LoginCard.css';
-import { useNotification } from "./Notification";
 
 type CNACardProps = {
     setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +27,7 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
 
     return (
         <>
+
             <div className="login-card">
 
                 <div className="login-header">
@@ -96,7 +97,9 @@ const CNACard = ({ setIsLogin }: CNACardProps) => {
                     </div>
 
                 </div>
+
             </div>
+
         </>
     );
 }

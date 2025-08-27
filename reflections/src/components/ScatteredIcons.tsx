@@ -25,7 +25,9 @@ import { useEffect, useState } from "react";
 const icons = [faPen, faBook, faBookOpen, faFeather, faLightbulb, faCalendar, faClock];
 
 const ScatteredIcons = () => {
+
     const [iconPositions, setIconPositions] = useState<IconPosition[]>([]);
+
 
     useEffect(() => {
         const generatePositions = () => {
@@ -44,6 +46,7 @@ const ScatteredIcons = () => {
 
     return (
         <div className="scattered-icons">
+
             {iconPositions.map((iconData) => (
                 <FontAwesomeIcon
                     key={iconData.id}
@@ -61,6 +64,7 @@ const ScatteredIcons = () => {
                     }}
                 />
             ))}
+            
         </div>
     );
 }

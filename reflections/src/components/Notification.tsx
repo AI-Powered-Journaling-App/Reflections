@@ -9,10 +9,10 @@ type NotificationContextType = {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const Notification = ({ children }: { children: ReactNode }) => {
-
-    // creating a basic notification state which stores a string
+    
     const [notification, setNotification] = useState<string | null>(null);
 
+    
     const showNotification = (text: string) => {
         setNotification(text);
         setTimeout(() => {
@@ -22,9 +22,13 @@ export const Notification = ({ children }: { children: ReactNode }) => {
 
     return (
         <NotificationContext.Provider value={{ showNotification }}>
+
             {children}
+
             <div className="notification-container">
+                
                 <AnimatePresence mode="wait">
+
                     {notification && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8, y: -30, filter: "blur(5px)" }}
@@ -41,8 +45,11 @@ export const Notification = ({ children }: { children: ReactNode }) => {
                             {notification}
                         </motion.div>
                     )}
+
                 </AnimatePresence>
+
             </div>
+            
         </NotificationContext.Provider>
     );
 };

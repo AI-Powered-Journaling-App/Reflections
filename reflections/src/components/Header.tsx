@@ -3,13 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNotification } from "./Notification";
-
+import { useTheme } from "./Theme";
+import ConfirmPrompt from "./ConfirmPrompt";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBookOpen, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 import "../styles/Header.css";
-import { useTheme } from "./Theme";
-import ConfirmPrompt from "./ConfirmPrompt";
 
 type HeaderProps = {
     isHomeSection: boolean,
@@ -63,7 +62,6 @@ const Header = ({
 
     }, [showUserOptions]);
 
-
     const handleLogout = async () => {
 
         try {
@@ -75,7 +73,6 @@ const Header = ({
         }
 
     }
-
 
     return (
         <div className="header">
@@ -175,6 +172,7 @@ const Header = ({
 
                         </motion.div>
                     }
+
                 </AnimatePresence>
 
             </div>

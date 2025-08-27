@@ -7,6 +7,7 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
 
+    
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
