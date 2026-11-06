@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm --prefix reflections run build",
+  "outputDirectory": "reflections/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+

@@ -1,0 +1,12 @@
+{
+  "name": "reflections-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix reflections run dev",
+    "build": "npm --prefix reflections run build",
+    "lint": "npm --prefix reflections run lint",
+    "preview": "npx --prefix reflections vite preview reflections",
+    "start": "npx --prefix reflections vite preview reflections"
+  }
+}
