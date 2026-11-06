@@ -6,6 +6,7 @@ export const MOOD_COLORS: {
     Excited:   { background: "#FDBA74", text: "#374151" }, // peachy orange, vibrant but soft
     Grateful:  { background: "#A7F3D0", text: "#065F46" }, // mint green, fresh & balanced
     Peaceful:  { background: "#BFDBFE", text: "#1E3A8A" }, // light sky blue, calm and gentle
+    Calm:      { background: "#BFDBFE", text: "#1E3A8A" }, // alias for Peaceful for backward compatibility
     Loved:     { background: "#FBCFE8", text: "#831843" }, // soft pink, affectionate warmth
 
     // Neutral / Reflective

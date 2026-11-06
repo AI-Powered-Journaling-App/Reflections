@@ -13,14 +13,15 @@ type ConfirmPromptType = {
 const ConfirmPrompt: React.FC<ConfirmPromptType> = ({ prompt, onNo, onYes }) => {
 
     const containerRef = useRef<HTMLDivElement | null>(null);
-
+    const onNoRef = useRef(onNo);
+    onNoRef.current = onNo;
 
     useEffect(() => {
 
         const handleClickOutside = (e: MouseEvent) => {
 
             if (containerRef.current && !containerRef.current?.contains(e.target as Node)) {
-                onNo();
+                onNoRef.current();
             }
 
         };
@@ -29,7 +30,7 @@ const ConfirmPrompt: React.FC<ConfirmPromptType> = ({ prompt, onNo, onYes }) => 
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-        }
+        };
 
     }, []);
 

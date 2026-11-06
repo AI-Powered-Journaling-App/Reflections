@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
+import { FALLBACK_TAG_PALETTE } from "../../../utils/AiInsightsUtils";
 
 import "../../../styles/Overlay.css";
 import "../../../styles/ui/Insights.css";
@@ -20,14 +21,15 @@ type InsightsProps = {
 const Insights: React.FC<InsightsProps> = ({ title, mood, moodColor, tags, tagColors, insight, onClose }) => {
 
     const insightsCardRef = useRef<HTMLDivElement | null>(null);
-
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
 
     useEffect(() => {
 
         const handleClickOutside = (e: MouseEvent) => {
 
             if (insightsCardRef.current && !insightsCardRef.current.contains(e.target as Node)){
-                onClose();
+                onCloseRef.current();
             }
 
         };
@@ -36,7 +38,7 @@ const Insights: React.FC<InsightsProps> = ({ title, mood, moodColor, tags, tagCo
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-        }
+        };
 
     }, []);
 
@@ -64,8 +66,8 @@ const Insights: React.FC<InsightsProps> = ({ title, mood, moodColor, tags, tagCo
                     </strong>
                     <span className="tag"
                         style={{
-                            backgroundColor: moodColor?.background,
-                            color: moodColor?.text,
+                            backgroundColor: moodColor?.background || "#BFDBFE",
+                            color: moodColor?.text || "#1E3A8A",
                         }}
                     >
                         {mood}
@@ -74,18 +76,21 @@ const Insights: React.FC<InsightsProps> = ({ title, mood, moodColor, tags, tagCo
 
                 <div className="insight-tags">
                     <strong>Tags: </strong>
-                    {tags.map((tag, index) => (
-                        <span
-                            key={index}
-                            className="tag"
-                            style={{
-                                backgroundColor: tagColors[index]?.background,
-                                color: tagColors[index]?.text,
-                            }}
-                        >
-                            {tag}
-                        </span>
-                    ))}
+                    {tags.map((tag, index) => {
+                        const color = tagColors?.[index] || FALLBACK_TAG_PALETTE[index % FALLBACK_TAG_PALETTE.length];
+                        return (
+                            <span
+                                key={index}
+                                className="tag"
+                                style={{
+                                    backgroundColor: color.background,
+                                    color: color.text,
+                                }}
+                            >
+                                {tag}
+                            </span>
+                        );
+                    })}
                 </div>
 
                 <span className="insight-analysis">

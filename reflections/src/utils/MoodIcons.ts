@@ -8,6 +8,7 @@ export const MOOD_ICONS: {
     Excited: faBolt,
     Grateful: faHandsPraying,
     Peaceful: faSpa,
+    Calm: faSpa,
     Loved: faHeart,
     Thoughtful: faLightbulb,
     Tired: faBed,

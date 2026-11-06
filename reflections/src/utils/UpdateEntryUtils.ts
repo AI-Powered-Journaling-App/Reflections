@@ -1,14 +1,15 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, type UpdateData, type DocumentData } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import type { TagColor, MoodColor } from "../types/entry";
 
-type UpdateEntryData = {
+export type UpdateEntryData = {
     title?: string;
     content?: string;
     date?: Date | null;
     mood?: string;
-    moodColor?: { background: string; text: string; };
+    moodColor?: MoodColor | null;
     tags?: string[];
-    tagColors?: { background: string; text: string; }[];
+    tagColors?: TagColor[];
     insight?: string;
 };
 
@@ -23,7 +24,7 @@ export const updateEntry = async (entryId: string, updatedData: UpdateEntryData)
         const entryRef = doc(db, "Entries", user.uid, "User Entries", entryId);
 
         // Prepare the update object
-        const updateObject: any = {};
+        const updateObject: UpdateData<DocumentData> = {};
         
         if (updatedData.title !== undefined) {
             updateObject.title = updatedData.title;

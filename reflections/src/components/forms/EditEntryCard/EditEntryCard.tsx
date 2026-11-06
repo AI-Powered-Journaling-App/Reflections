@@ -3,30 +3,25 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import MyDatePicker from "../../ui/MyDatePicker/MyDatePicker";
-import { updateEntry } from "../../../utils/UpdateEntryUtils";
+import { updateEntry, type UpdateEntryData } from "../../../utils/UpdateEntryUtils";
 import { getAiInsights } from "../../../utils/AiInsightsUtils";
 import { useNotification } from '../../common/Notification/Notification';
+import type { JournalEntry } from "../../../types/entry";
+import { parseEntryDate } from "../../../utils/DateUtils";
 
 import "../../../styles/Overlay.css";
 import "../../../styles/forms/EditEntryCard.css";
 
 type EditEntryCardProps = {
-    entry: {
-        id: string;
-        title: string;
-        date: any; // Firebase timestamp
-        content: string;
-    };
+    entry: JournalEntry;
     onClose: () => void;
-    onUpdate: (updatedEntry: any) => void; // Callback to update the parent state
+    onUpdate: (updatedEntry: JournalEntry) => void;
 };
 
 const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate }) => {
 
     const [title, setTitle] = useState(entry.title);
-    const [date, setDate] = useState<Date | null>(
-        entry.date?.toDate ? entry.date.toDate() : new Date()
-    );
+    const [date, setDate] = useState<Date | null>(parseEntryDate(entry.date));
     const [content, setContent] = useState(entry.content);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
@@ -34,16 +29,18 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
     const { showNotification } = useNotification();
 
     const editEntryCardRef = useRef<HTMLDivElement | null>(null);
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
 
     useEffect(() => {
 
         const handleClickOutside = (e: MouseEvent) => {
 
             if (editEntryCardRef.current && !editEntryCardRef.current.contains(e.target as Node)){
-                onClose();
-            };
+                onCloseRef.current();
+            }
 
-        }
+        };
 
         document.addEventListener("mousedown", handleClickOutside);
 
@@ -69,7 +66,7 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
 
     // Check if there are any changes
     const hasChanges = () => {
-        const originalDate = entry.date?.toDate ? entry.date.toDate() : new Date();
+        const originalDate = parseEntryDate(entry.date);
         return (
             title.trim() !== entry.title ||
             content.trim() !== entry.content ||
@@ -103,7 +100,7 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
         setIsUpdating(true);
 
         try {
-            let updatedData: any = {
+            let updatedData: UpdateEntryData = {
                 title: title.trim(),
                 content: content.trim(),
                 date: date,
@@ -112,10 +109,9 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
             // If content has changed significantly, regenerate AI insights
             if (hasSignificantContentChange()) {
                 setIsGeneratingInsights(true);
-                // showNotification("Generating new insights...");
 
                 try {
-                    // Temporary state setters for AI insights (we don't use these API needs them)
+                    // Temporary state setters for AI insights
                     const tempSetters = {
                         setTags: () => { },
                         setTagColors: () => { },
@@ -155,7 +151,7 @@ const EditEntryCard: React.FC<EditEntryCardProps> = ({ entry, onClose, onUpdate 
             await updateEntry(entry.id, updatedData);
 
             // Create updated entry object for parent state update
-            const updatedEntry = {
+            const updatedEntry: JournalEntry = {
                 ...entry,
                 ...updatedData,
             };

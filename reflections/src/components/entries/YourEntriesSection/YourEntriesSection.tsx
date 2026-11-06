@@ -4,26 +4,29 @@ import { auth, db } from "../../../firebase";
 import { AnimatePresence, easeInOut, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagicWandSparkles, faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { deleteEntry } from "../../../utils/DeleteEntryUtils"
+import { deleteEntry } from "../../../utils/DeleteEntryUtils";
+import { formatEntryDate } from "../../../utils/DateUtils";
+import { FALLBACK_TAG_PALETTE } from "../../../utils/AiInsightsUtils";
+import type { JournalEntry } from "../../../types/entry";
 import { useNotification } from '../../common/Notification/Notification';
 import ConfirmPrompt from "../../common/ConfirmPrompt/ConfirmPrompt";
 import ContentCard from "../ContentCard/ContentCard";
 import Insights from "../../ui/Insights/Insights";
 import EditEntryCard from "../../forms/EditEntryCard/EditEntryCard";
 
-import "../../../styles/Overlay.css"
+import "../../../styles/Overlay.css";
 import "../../../styles/entries/YourEntriesSection.css";
 
 const YourEntriesSection = () => {
 
-    const [entries, setEntries] = useState<any[]>([]);
+    const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [moreOptions, setMoreOptons] = useState(false);
     const [popupPosition, setPopupPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
     const [showInsight, setShowInsights] = useState(false);
-    const [selectedEntry, setSelectedEntry] = useState<any | null>(null);
+    const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
     const [deleteConfrim, setDeleteConfrim] = useState(false);
     const [showContentCard, setShowContentCard] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -51,10 +54,10 @@ const YourEntriesSection = () => {
 
             const snapshot = await getDocs(q);
 
-            //snapshot.docs is an array of all the documents in that query result.Each doc is a QueryDocumentSnapshot object, which has methods like .id and .data().
-            const data = snapshot.docs.map((doc) => ({
+            // snapshot.docs is an array of all the documents in that query result.
+            const data: JournalEntry[] = snapshot.docs.map((doc) => ({
                 id: doc.id,
-                ...doc.data(),
+                ...(doc.data() as Omit<JournalEntry, "id">),
             }));
 
             setEntries(data);
@@ -101,7 +104,7 @@ const YourEntriesSection = () => {
         setMoreOptons(!moreOptions);
     };
 
-    const hadnleAiInsightpopup = (entry: any) => {
+    const hadnleAiInsightpopup = (entry: JournalEntry) => {
         setSelectedEntry(entry);
         setShowInsights(true);
     };
@@ -111,7 +114,7 @@ const YourEntriesSection = () => {
         setMoreOptons(false);
     };
 
-    const handleUpdateEntry = async (updatedEntry: any) => {
+    const handleUpdateEntry = async (updatedEntry: JournalEntry) => {
         // Update the entries array with the new entry array
         setEntries((prev) =>
             prev.map((entry) =>
@@ -157,8 +160,8 @@ const YourEntriesSection = () => {
                         entries.map((entry) => (
 
                             <div key={entry.id} className="single-entry-card" onClick={() => {
-                                setSelectedEntry(entry),
-                                    setShowContentCard(true)
+                                setSelectedEntry(entry);
+                                setShowContentCard(true);
                             }}>
 
                                 <div className="entry-left">
@@ -169,27 +172,27 @@ const YourEntriesSection = () => {
                                         <div className="entry-tags">
                                             {entry.tags &&
                                                 entry.tags.length > 0 &&
-                                                entry.tags.map((tag: string, index: number) => (
-                                                    <span
-                                                        key={index}
-                                                        className="entry-tag"
-                                                        style={{
-                                                            backgroundColor:
-                                                                entry.tagColors?.[index]?.background,
-                                                            color: entry.tagColors?.[index]?.text,
-                                                        }}
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
+                                                entry.tags.map((tag: string, index: number) => {
+                                                    const color = entry.tagColors?.[index] || FALLBACK_TAG_PALETTE[index % FALLBACK_TAG_PALETTE.length];
+                                                    return (
+                                                        <span
+                                                            key={index}
+                                                            className="entry-tag"
+                                                            style={{
+                                                                backgroundColor: color.background,
+                                                                color: color.text,
+                                                            }}
+                                                        >
+                                                            {tag}
+                                                        </span>
+                                                    );
+                                                })}
                                         </div>
                                     </div>
 
                                     {/* date */}
                                     <div className="entry-date">
-                                        {entry.date?.toDate
-                                            ? entry.date.toDate().toLocaleDateString()
-                                            : ""}
+                                        {formatEntryDate(entry.date)}
                                     </div>
 
                                     {/* content */}
@@ -282,7 +285,7 @@ const YourEntriesSection = () => {
                 <Insights
                     title={selectedEntry.title}
                     mood={selectedEntry.mood || "Unknown"}
-                    moodColor={selectedEntry.moodColor}
+                    moodColor={selectedEntry.moodColor || undefined}
                     tags={selectedEntry.tags}
                     tagColors={selectedEntry.tagColors || []}
                     insight={selectedEntry.insight || "no insight avaiable"}
@@ -293,23 +296,19 @@ const YourEntriesSection = () => {
             {showContentCard && selectedEntry && (
                 <ContentCard
                     title={selectedEntry.title}
-                    date={selectedEntry.date?.toDate ?
-                        selectedEntry.date.toDate().toLocaleDateString() :
-                        ""}
+                    date={formatEntryDate(selectedEntry.date)}
                     content={selectedEntry.content}
                     onClose={() => setShowContentCard(false)}
                 />
             )}
 
-            {deleteConfrim &&
-                <div className="overlay">
-                    <ConfirmPrompt
-                        prompt={"Are you sure you want to delete this entry?"}
-                        onNo={() => setDeleteConfrim(false)}
-                        onYes={handleDeleteEntry}
-                    />
-                </div>
-            }
+            {deleteConfrim && (
+                <ConfirmPrompt
+                    prompt={"Are you sure you want to delete this entry?"}
+                    onNo={() => setDeleteConfrim(false)}
+                    onYes={handleDeleteEntry}
+                />
+            )}
 
             {showEditPopup && selectedEntry && (
                 <EditEntryCard

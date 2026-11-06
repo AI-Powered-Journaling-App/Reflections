@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
 import ContentCard from "../ContentCard/ContentCard";
+import type { JournalEntry } from "../../../types/entry";
+import { formatEntryDate } from "../../../utils/DateUtils";
+import { FALLBACK_TAG_PALETTE } from "../../../utils/AiInsightsUtils";
 
 import "../../../styles/entries/YourEntriesSection.css";
 
@@ -12,11 +15,11 @@ type RecentEntriesCardProps = {
 };
 
 const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection, setIsAddEntrySection, setIsYourEntriesSection }) => {
-    const [entries, setEntries] = useState<any[]>([]);
+    const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [showContentCard, setShowContentCard] = useState(false);
-    const [selectedEntry, setSelectedEntry] = useState<any | null>(null);
+    const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
 
 
     useEffect(() => {
@@ -37,9 +40,9 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
 
                 const snapshot = await getDocs(q);
 
-                const data = snapshot.docs.map((doc) => ({
+                const data: JournalEntry[] = snapshot.docs.map((doc) => ({
                     id: doc.id,
-                    ...doc.data(),
+                    ...(doc.data() as Omit<JournalEntry, "id">),
                 }));
 
                 setEntries(data);
@@ -92,26 +95,27 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
                                     <div className="entry-tags">
                                         {entry.tags &&
                                             entry.tags.length > 0 &&
-                                            entry.tags.map((tag: string, index: number) => (
-                                                <span
-                                                    key={index}
-                                                    className="entry-tag"
-                                                    style={{
-                                                        backgroundColor: entry.tagColors?.[index]?.background,
-                                                        color: entry.tagColors?.[index]?.text,
-                                                    }}
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
+                                            entry.tags.map((tag: string, index: number) => {
+                                                const color = entry.tagColors?.[index] || FALLBACK_TAG_PALETTE[index % FALLBACK_TAG_PALETTE.length];
+                                                return (
+                                                    <span
+                                                        key={index}
+                                                        className="entry-tag"
+                                                        style={{
+                                                            backgroundColor: color.background,
+                                                            color: color.text,
+                                                        }}
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                );
+                                            })}
                                     </div>
                                 </div>
 
                                 {/* date */}
                                 <div className="entry-date">
-                                    {entry.date?.toDate
-                                        ? entry.date.toDate().toLocaleDateString()
-                                        : ""}
+                                    {formatEntryDate(entry.date)}
                                 </div>
 
                                 {/* preview content */}
@@ -127,12 +131,10 @@ const RecentEntriesCard: React.FC<RecentEntriesCardProps> = ({ setIsHomeSection,
                 )}
             </div>
 
-            {showContentCard &&
+            {showContentCard && selectedEntry &&
                 <ContentCard
                     title={selectedEntry.title}
-                    date={selectedEntry.date?.toDate ?
-                        selectedEntry.date.toDate().toLocaleDateString() :
-                        ""}
+                    date={formatEntryDate(selectedEntry.date)}
                     content={selectedEntry.content}
                     onClose={() => setShowContentCard(false)}
                 />

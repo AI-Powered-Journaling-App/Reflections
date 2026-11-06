@@ -3,6 +3,7 @@ import { auth, db } from "../firebase";
 import { getAiInsights } from "./AiInsightsUtils";
 
 import { MOOD_COLORS } from "./MoodColors";
+import type { TagColor, MoodColor } from "../types/entry";
 
 type SaveEntryProps = {
     title: string,
@@ -11,14 +12,14 @@ type SaveEntryProps = {
     setDate: React.Dispatch<React.SetStateAction<Date | null>>,
     textarea: string,
     setTextarea: React.Dispatch<React.SetStateAction<string>>,
-    tags: never[],
-    setTags: React.Dispatch<React.SetStateAction<never[]>>,
-    tagColors: { background: string; text: string; }[],
-    setTagColors: React.Dispatch<React.SetStateAction<{ background: string; text: string; }[]>>,
+    tags: string[],
+    setTags: React.Dispatch<React.SetStateAction<string[] | never[]>>,
+    tagColors: TagColor[],
+    setTagColors: React.Dispatch<React.SetStateAction<TagColor[]>>,
     mood: string,
     setMood: React.Dispatch<React.SetStateAction<string>>,
-    moodColor?: { background: string; text: string; },
-    setMoodColor: React.Dispatch<React.SetStateAction<{ background: string; text: string; } | undefined>>,
+    moodColor?: MoodColor,
+    setMoodColor: React.Dispatch<React.SetStateAction<MoodColor | undefined>>,
     insight: string,
     setInsight: React.Dispatch<React.SetStateAction<string>>,
     setIsSavingEntry: React.Dispatch<React.SetStateAction<boolean>>,
@@ -63,7 +64,7 @@ export const handleSaveEntry = async ({
                 finalTagColors = insights.tagColors;
 
                 // Get mood color from MOOD_COLORS constant instead of state
-                finalMoodColor = MOOD_COLORS[insights.mood] || MOOD_COLORS["Calm"];
+                finalMoodColor = MOOD_COLORS[insights.mood] || MOOD_COLORS["Peaceful"];
 
                 // Also update the state for UI consistency
                 setMoodColor(finalMoodColor);
@@ -72,7 +73,7 @@ export const handleSaveEntry = async ({
 
         // Ensure we have a valid mood color
         if (!finalMoodColor && finalMood) {
-            finalMoodColor = MOOD_COLORS[finalMood] || MOOD_COLORS["Calm"];
+            finalMoodColor = MOOD_COLORS[finalMood] || MOOD_COLORS["Peaceful"];
         }
 
         const user = auth.currentUser;

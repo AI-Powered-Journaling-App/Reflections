@@ -16,17 +16,18 @@ type ContentCardProps = {
 const ContentCard: React.FC<ContentCardProps> = ({ title, date, content, onClose }) => {
 
     const contentCardRef = useRef<HTMLDivElement | null>(null);
-
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
 
     useEffect(() => {
 
         const handleClickOutside = (e: MouseEvent) => {
 
             if (contentCardRef.current && !contentCardRef.current.contains(e.target as Node)) {
-                onClose();
+                onCloseRef.current();
             }
 
-        }
+        };
 
         document.addEventListener("mousedown", handleClickOutside);
 

@@ -36,7 +36,7 @@ const LoginCard = ({ setIsLogin }: LoginCardProps) => {
             }
         });
         return () => unsubscribe();
-    }, []);
+    }, [navigate]);
 
     return (
         <>

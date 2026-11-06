@@ -22,15 +22,16 @@ const ForgotPassword = ({ onClose }: ForgotPasswordProps) => {
     const { showNotification } = useNotification();
 
     const forgotPasswordCardRef = useRef<HTMLDivElement | null>(null);
-
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
 
     useEffect(() => {
 
         const handleClickOutside = (e: MouseEvent) => {
 
             if (forgotPasswordCardRef.current && !forgotPasswordCardRef.current.contains(e.target as Node)) {
-                onClose();
-            };
+                onCloseRef.current();
+            }
 
         };
 

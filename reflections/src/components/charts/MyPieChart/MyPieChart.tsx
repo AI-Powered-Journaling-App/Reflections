@@ -2,20 +2,9 @@ import { useEffect, useState } from "react";
 import { getUserMoodData } from "../../../utils/HomeSectionUtils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { easeInOut, motion } from "framer-motion";
+import type { MoodData, OtherStats } from "../../../types/entry";
 
 import "../../../styles/charts/MyPieChart.css";
-
-type MoodData = {
-    mood: string,
-    value: number,
-    color: string,
-};
-
-type OtherStats = {
-    mostLoggedMood: { mood: string, value: number } | null;
-    totalEntriesCount: number;
-    streak: number;
-};
 
 type MyPieChartProps = {
     onDataLoaded?: (data: MoodData[], stats: OtherStats) => void;
@@ -125,10 +114,17 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ onDataLoaded }) => {
 export default MyPieChart;
 
 // helper functions
-const renderCustomLabelLine = ({ points }: any) => {
+interface CustomLabelLineProps {
+    points?: Array<{ x: number; y: number }>;
+}
+
+const renderCustomLabelLine = ({ points }: CustomLabelLineProps) => {
+    if (!points || points.length === 0) {
+        return <polyline points="" stroke="none" fill="none" />;
+    }
     return (
         <polyline
-            points={points.map((p: any) => `${p.x},${p.y}`).join(" ")}
+            points={points.map((p) => `${p.x},${p.y}`).join(" ")}
             stroke="var(--txt-primary)"
             strokeWidth={1}
             fill="none"
@@ -136,10 +132,21 @@ const renderCustomLabelLine = ({ points }: any) => {
     );
 };
 
-const renderCustomLabel = (props: any) => {
-    const { cx, cy, midAngle, outerRadius, percent, name } = props;
+interface CustomLabelProps {
+    cx?: number;
+    cy?: number;
+    midAngle?: number;
+    outerRadius?: number;
+    percent?: number;
+    name?: string;
+}
 
-    if (!name) return null;
+const renderCustomLabel = (props: CustomLabelProps) => {
+    const { cx = 0, cy = 0, midAngle = 0, outerRadius = 0, percent = 0, name } = props;
+
+    if (!name) {
+        return <text />;
+    }
 
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 30;

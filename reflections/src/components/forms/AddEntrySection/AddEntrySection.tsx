@@ -8,6 +8,8 @@ import { getAiInsights } from '../../../utils/AiInsightsUtils';
 import { motion } from 'framer-motion';
 import Insights from '../../ui/Insights/Insights';
 
+import type { TagColor, MoodColor } from '../../../types/entry';
+
 import "../../../styles/forms/AddEntrySection.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,10 +23,10 @@ const AddEntrySection = () => {
     const [date, setDate] = useState<Date | null>(new Date());
     const [textarea, setTextarea] = useState("");
 
-    const [tags, setTags] = useState([]);
-    const [tagColors, setTagColors] = useState<{ background: string; text: string }[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [tagColors, setTagColors] = useState<TagColor[]>([]);
     const [mood, setMood] = useState("");
-    const [moodColor, setMoodColor] = useState<{ background: string; text: string }>();
+    const [moodColor, setMoodColor] = useState<MoodColor | undefined>();
     const [insight, setInsight] = useState("");
     const [showAiInsights, setShowAiInsights] = useState(false);
 
